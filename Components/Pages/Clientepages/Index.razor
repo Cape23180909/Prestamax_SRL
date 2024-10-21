@@ -1,6 +1,124 @@
 ﻿@page "/Index/Clientes"
-<h3>Clientes Rapas su madre</h3>
+@inject ClienteService clienteService
 @rendermode InteractiveServer
+
+<PageTitle>Consulta de clientes</PageTitle>
+
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header space-between">
+            <h3 class="card-title">Consulta de Clientes</h3>
+
+            <div class="row mb-3 align-items-end">
+                <div class="col md-3">
+                    <label for="Filtro" class="form-label">Filtrar por:</label>
+                    <select @bind="filtro" class="form-select">
+                        <option value="0">Seleccione una opci&oacute;n</option>
+                        <option value="Cedula">Cedula</option>
+                        <option value="Nombres">Nombres</option>
+                        <option value="Apellidos">Apellidos</option>
+                        <option value="Ciudad">Ciudad</option>
+                    </select>
+                </div>
+
+                <div class="col md-6">
+                    <label for="ValorFiltro" class="form-label">Busqueda:</label>
+                    <div class="input-group">
+                        <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                        <button @onclick="Buscar" class=" btn btn-outline-primary" type="button">
+                            <span class="bi bi-search"></span>Buscar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <a href="/Cliente/Create" class="btn btn-primary">
+                        <span class="bi bi-plus-square mt-3"></span> Crear
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-hover">
+                <thead class="table  table-striped text-black text-center">
+                    <tr>
+                        <th>ClienteId</th>
+                        <th>Cedula</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Direccion</th>
+                        <th>Telefono</th>
+                        <th>Ciudad</th>
+                        <th>Ver</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    @foreach (var cliente in listacliente)
+                    {
+                        <tr>
+                            <td>@cliente.ClienteId</td>
+                            <td>@cliente.Cedula</td>
+                            <td>@cliente.Nombres</td>
+                            <td>@cliente.Apellidos</td>
+                            <td>@cliente.Direccion</td>
+                            <td>@cliente.Telefono</td>
+                            <td>@cliente.Ciudad</td>
+                            <td>
+                                <a href="/Cobro/Details/@cliente.ClienteId" class="btn bi bi-eye"></a>
+                            </td>
+                            <td>
+                                <a href="/Cobro/Edit/@cliente.ClienteId" class="btn bi bi-pencil-square"></a>
+                            </td>
+                            <td>
+                                <a href="/Cobro/Delete/@cliente.ClienteId" class="btn bi bi-trash"></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer space-between">
+            <p>Total de clientes: @listacliente.Count</p>
+        </div>
+    </div>
+</div>
+
 @code {
-    // Aquí puedes agregar la lógica necesaria para la página de Clientes
+    public Clientes cliente = new Clientes();
+    public List<Clientes> listacliente = new List<Clientes>();
+    public string filtro = "";
+    public string valorFiltro = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        listacliente = await clienteService.Listar(a => true);
+    }
+
+    public async Task Buscar()
+    {
+        if (string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            listacliente = await clienteService.Listar(p => true);
+        }
+        if (filtro == "Cedula")
+        {
+            listacliente = await clienteService.Listar(c => c.Cedula.Contains(valorFiltro));
+        }
+        else if (filtro == "Nombres")
+        {
+            listacliente = await clienteService.Listar(c => c.Nombres.Contains(valorFiltro));
+        }
+        else if (filtro == "Apellidos")
+        {
+            listacliente = await clienteService.Listar(c => c.Apellidos.Contains(valorFiltro));
+        }
+        else if (filtro == "Ciudad")
+        {
+            listacliente = await clienteService.Listar(c => c.Ciudad.Contains(valorFiltro));
+        }
+    }
 }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Prestamax_SRL.Components;
 using Prestamax_SRL.Components.Account;
 using Prestamax_SRL.Data;
+using Prestamax_SRL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -41,6 +43,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+//Services
+builder.Services.AddScoped<ClienteService>();
+
 
 var app = builder.Build();
 
