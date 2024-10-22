@@ -27,9 +27,9 @@ public class ClienteService
     //Metodo Modificar 
     private async Task<bool> Modificar(Clientes cliente)
     {
-        _contexto.Clientes.Update(cliente);
-        var modificado = await _contexto.SaveChangesAsync() > 0;
-        return modificado;
+        _contexto.Update(cliente);
+        return await _contexto
+            .SaveChangesAsync() > 0;
     }
     //Metod Guardar 
     public async Task<bool> Guardar(Clientes cliente)

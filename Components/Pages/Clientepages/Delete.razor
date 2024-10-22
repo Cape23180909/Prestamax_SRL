@@ -1,0 +1,92 @@
+﻿@page "/Cliente/Delete/{ClienteId:int}"
+@inject ClienteService clienteService
+@inject NavigationManager navigationManager
+@inject ToastService toastService
+@rendermode InteractiveServer
+
+<PageTitle>Eliminar Cliente</PageTitle>
+
+@if (clientes != null)
+{
+    <div class="container mt-5">
+        <div class="card shadow-lg border-danger rounded-3">
+            <div class="card-header text-center bg-danger text-white py-4 rounded-top">
+                <h3 class="font-weight-bold">Eliminar Cliente</h3>
+                <p class="mb-0">Confirma que deseas eliminar este cliente</p>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="bg-light p-3 rounded-3 border border-danger">
+                            <h5 class="text-primary">Información del Cliente:</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Cliente ID:</strong> <span class="text-muted">@clientes.ClienteId</span></li>
+                                <li><strong>Cédula:</strong> <span class="text-muted">@clientes.Cedula</span></li>
+                                <li><strong>Nombres:</strong> <span class="text-muted">@clientes.Nombres</span></li>
+                                <li><strong>Apellidos:</strong> <span class="text-muted">@clientes.Apellidos</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light p-3 rounded-3 border border-danger">
+                            <h5 class="text-primary">Detalles de Contacto:</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Dirección:</strong> <span class="text-muted">@clientes.Direccion</span></li>
+                                <li><strong>Teléfono:</strong> <span class="text-muted">@clientes.Telefono</span></li>
+                                <li><strong>Ciudad:</strong> <span class="text-muted">@clientes.Ciudad</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <h5 class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> ¡Cuidado!</h5>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <button type="button" class="btn btn-outline-danger btn-lg" @onclick="EliminarCliente">
+                    <i class="bi bi-trash-fill"></i> Eliminar 
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-lg" @onclick="Retroceder">
+                    <i class="bi bi-box-arrow-left"></i> Retroceder
+                </button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p class="text-danger text-center mt-5">Cliente no encontrado.</p>
+}
+
+@code {
+    [Parameter]
+    public int ClienteId { get; set; }
+    public Clientes? clientes { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        clientes = await clienteService.Buscar(ClienteId);
+    }
+
+    public async Task EliminarCliente()
+    {
+        if (clientes == null)
+        {
+            return;
+        }
+        if (await clienteService.Eliminar(ClienteId))
+        {
+            toastService.Notify(new(ToastType.Success,
+            iconName: IconName.None,
+            title: "Eliminación Exitosa",
+            helpText: "",
+            message: "El cliente se ha eliminado correctamente."));
+            Retroceder();
+        }
+    }
+
+    public async Task Retroceder()
+    {
+        navigationManager.NavigateTo("/Cliente/Index");
+    }
+}

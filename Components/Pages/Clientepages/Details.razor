@@ -1,0 +1,54 @@
+﻿@page "/Cliente/Details/{ClienteId:int}"
+@inject ClienteService clienteService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+@if (clientes != null)
+{
+    <div class="container mt-5">
+        <div class="card shadow-lg border-light">
+            <div class="card-header text-center text-black py-4 rounded">
+                <h3 class="font-weight-bold">Detalles del Cliente</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="bg-light p-3 rounded">
+                            <ul class="list-unstyled">
+                                <li><strong>Cliente ID:</strong> <span class="text-muted">@clientes.ClienteId</span></li>
+                                <li><strong>Cédula:</strong> <span class="text-muted">@clientes.Cedula</span></li>
+                                <li><strong>Nombres:</strong> <span class="text-muted">@clientes.Nombres</span></li>
+                                <li><strong>Apellidos:</strong> <span class="text-muted">@clientes.Apellidos</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light p-3 rounded">
+                            <ul class="list-unstyled">
+                                <li><strong>Dirección:</strong> <span class="text-muted">@clientes.Direccion</span></li>
+                                <li><strong>Teléfono:</strong> <span class="text-muted">@clientes.Telefono</span></li>
+                                <li><strong>Ciudad:</strong> <span class="text-muted">@clientes.Ciudad</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <a href="/Cliente/Index" class="btn btn-outline-primary">
+                    <span class="bi bi-arrow-bar-left"></span> Retroceder
+                </a>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int ClienteId { get; set; }
+    public Clientes clientes { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        clientes = await clienteService.Buscar(ClienteId);
+    }
+}

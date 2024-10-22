@@ -1,0 +1,123 @@
+﻿@page "/Cliente/Edit/{ClienteId:int}"
+@inject ClienteService clienteService
+@inject NavigationManager navigationManager
+@inject ToastService toastService
+@rendermode InteractiveServer
+
+<PageTitle>Editar Cliente</PageTitle>
+<EditForm Model="cliente" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="container-fluid vh-95 d-flex justify-content-center align-items-center">
+        <div class="card shadow-lg" style="width: 1400px; min-height: 600px;">
+            <div class="card-header text-black">
+                <h3 class="card-title text-center">Editar Cliente</h3>
+            </div>
+
+            <div class="card-body">
+
+                <div class="mb-3">
+                    <label for="clienteId" class="form-label">ClienteId</label>
+                    <InputNumber id="clienteId" class="form-control" readonly @bind-Value="cliente.ClienteId" />
+                    <ValidationMessage For="@(() => cliente.ClienteId)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="cedula" class="form-label">Cédula</label>
+                    <InputText id="cedula" class="form-control" @bind-Value="cliente.Cedula" />
+                    <ValidationMessage For="@(() => cliente.Cedula)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="nombres" class="form-label">Nombres</label>
+                    <InputText id="nombres" class="form-control" @bind-Value="cliente.Nombres" />
+                    <ValidationMessage For="@(() => cliente.Nombres)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="apellidos" class="form-label">Apellidos</label>
+                    <InputText id="apellidos" class="form-control" @bind-Value="cliente.Apellidos" />
+                    <ValidationMessage For="@(() => cliente.Apellidos)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="direccion" class="form-label">Dirección</label>
+                    <InputText id="direccion" class="form-control" @bind-Value="cliente.Direccion" />
+                    <ValidationMessage For="@(() => cliente.Direccion)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <InputText id="telefono" class="form-control" @bind-Value="cliente.Telefono" />
+                    <ValidationMessage For="@(() => cliente.Telefono)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="ciudad" class="form-label">Ciudad</label>
+                    <InputText id="ciudad" class="form-control" @bind-Value="cliente.Ciudad" />
+                    <ValidationMessage For="@(() => cliente.Ciudad)" />
+                </div>
+            </div>
+
+            <div class="card-footer text-center">
+                <button type="button" class="btn btn-outline-primary ml-2" @onclick="Nuevo">
+                    <span class="bi bi-plus"></span> Nuevo
+                </button>
+                <button type="submit" class="btn btn-outline-success ml-2">
+                    <span class="bi bi-check-circle-fill"></span> Guardar
+                </button>
+                <button type="button" class="btn btn-outline-danger" @onclick="Retroceder">
+                    <span class="bi bi-arrow-bar-left"></span> Retroceder
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int ClienteId { get; set; }
+    public Clientes cliente { get; set; } = new Clientes();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Buscar();
+    }
+
+    public async Task Nuevo()
+    {
+        cliente = new Clientes();
+    }
+
+    public async Task Buscar()
+    {
+        var encontrado = await clienteService.Buscar(ClienteId);
+        if (encontrado != null)
+        {
+            cliente = encontrado;
+        }
+        else
+        {
+            Nuevo();
+        }
+    }
+
+    public async Task Guardar()
+    {
+        var guardado = await clienteService.Guardar(cliente);
+        if (guardado)
+        {
+            toastService.Notify(new(ToastType.Success,
+            iconName: IconName.None,
+            title: "Guardado",
+            helpText: "",
+            message: "Los detalles del cliente se han guardado correctamente."));
+            Nuevo();
+            Retroceder();
+        }
+    }
+
+    public async Task Retroceder()
+    {
+        navigationManager.NavigateTo("/Cliente/Index");
+    }
+}
