@@ -1,30 +1,32 @@
-﻿@inherits LayoutComponentBase
+﻿@using Mono.TextTemplating
+@inherits LayoutComponentBase
 @inject NavigationManager navigationManager
+@rendermode InteractiveServer
 
 <Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" />
 
 <div style="background: linear-gradient(to right, #1A2E5B, #0C3E9F); min-height: 100vh;">
     <main style="display: flex; flex-direction: column; justify-content: space-between; min-height: 100vh;">
-        <!-- Header con navegación -->
-        <header style="background-color: #1A2E5B; padding: 10px; display: flex; justify-content: flex-end; align-items: center;">
-            <button @onclick="NavigateToSomePage" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer;">
+        <header style="background-color: #1A2E5B; padding: 10px; display: flex; align-items: center;">
+            <button @onclick="Volver" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; color: white;">
+                <img src="/Money.png" alt="Ícono de Menú" style="width: 70px; height: 40px; margin-right: 8px;" />
+                <span style="color: white;">Prestamax_SRL</span>
+            </button>
+            <button @onclick="SalirMenu" style="background: none; border: none; color: white; font-size: 18px; margin-left: auto; cursor: pointer;">
                 Usuario: @userName
             </button>
         </header>
 
-        <!-- Contenido de la página -->
         <article style="flex-grow: 1; display: flex; justify-content: center; align-items: center; padding: 20px;">
-            @Body
+            @Body <!-- Esto ahora debe funcionar correctamente -->
         </article>
 
-        <!-- Footer -->
         <footer style="text-align: center; color: white; padding: 10px; background-color: #1A2E5B;">
             <p>© 2024 Prestamax SRL</p>
         </footer>
     </main>
 </div>
 
-<!-- Error UI para manejo de errores en Blazor -->
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
@@ -44,17 +46,21 @@
 
         if (user.Identity.IsAuthenticated)
         {
-            userName = user.Identity.Name; // Obtiene el nombre del usuario autenticado
+            userName = user.Identity.Name; 
         }
         else
         {
-            userName = ""; // Usuario no autenticado
+            userName = ""; 
         }
     }
 
-    public void NavigateToSomePage()
+    public void Volver()
     {
-        // Cambiar la ruta a una página deseada
         navigationManager.NavigateTo("/menu");
+    }
+
+    public void SalirMenu()
+    {
+        navigationManager.NavigateTo("/logout");
     }
 }

@@ -1,48 +1,117 @@
 ﻿@page "/menu"
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
+
 <div style="background: linear-gradient(135deg, #1A2E5B, #0C3E9F); width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;">
-    <div style="background-color: white; width: 90%; height: 90vh; padding: 50px; border-radius: 20px; box-shadow: 0px 30px 60px rgba(0,0,0,0.3); text-align: center; position: relative; overflow: hidden;">
-        <h1 style="color: #0C3E9F; margin-bottom: 50px; font-size: 55px; font-weight: 700;">Menú Principal</h1>
+    <div style="background-color: #f7f9fc; width: 85%; height: 90vh; padding: 40px; border-radius: 20px; box-shadow: 0px 20px 40px rgba(0,0,0,0.2); text-align: center; position: relative; overflow: hidden;">
+        <h1 style="color: #0C3E9F; margin-bottom: 50px; font-size: 48px; font-weight: 700; text-shadow: 1px 1px 4px rgba(0,0,0,0.1);">Menú Principal</h1>
 
         <div class="menu-items" style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 30px;">
-            <div class="menu-item" style="flex: 1; min-width: 200px; max-width: 220px;">
-                <button @onclick="NavigateToClients" style="width: 100%; padding: 30px; background-color: #0C3E9F; color: white; border: none; border-radius: 15px; display: flex; flex-direction: column; align-items: center; box-shadow: 0px 10px 25px rgba(0,0,0,0.3); transition: transform 0.3s;">
-                    <img src="/Cliente.png" alt="Clientes" style="width: 70px; height: 70px; margin-bottom: 15px;" />
-                    <span style="font-size: 20px; font-weight: bold;">Clientes</span>
+            <div class="menu-item">
+                <button @onclick="NavigateToClients" class="menu-button">
+                    <div class="img-container">
+                        <img src="/Cliente.png" alt="Clientes" />
+                    </div>
+                    <span>Clientes</span>
                 </button>
             </div>
 
-            <div class="menu-item" style="flex: 1; min-width: 200px; max-width: 220px;">
-                <button @onclick="NavigateToRegistrarPrestamo" style="width: 100%; padding: 30px; background-color: #0C3E9F; color: white; border: none; border-radius: 15px; display: flex; flex-direction: column; align-items: center; box-shadow: 0px 10px 25px rgba(0,0,0,0.3); transition: transform 0.3s;">
-                    <img src="/Prestamo.png" alt="Registrar Préstamo" style="width: 70px; height: 70px; margin-bottom: 15px;" />
-                    <span style="font-size: 20px; font-weight: bold;">Registrar Préstamo</span>
+            <div class="menu-item">
+                <button @onclick="NavigateToRegistrarPrestamo" class="menu-button">
+                    <div class="img-container">
+                        <img src="/Prestamo.png" alt="Registrar Préstamo" />
+                    </div>
+                    <span>Registrar Préstamo</span>
                 </button>
             </div>
 
-            <div class="menu-item" style="flex: 1; min-width: 200px; max-width: 220px;">
-                <button @onclick="NavigateToRegistrarCobro" style="width: 100%; padding: 30px; background-color: #0C3E9F; color: white; border: none; border-radius: 15px; display: flex; flex-direction: column; align-items: center; box-shadow: 0px 10px 25px rgba(0,0,0,0.3); transition: transform 0.3s;">
-                    <img src="/Cobro.png" alt="Registrar Cobro" style="width: 70px; height: 70px; margin-bottom: 15px;" />
-                    <span style="font-size: 20px; font-weight: bold;">Registrar Cobro</span>
+            <div class="menu-item">
+                <button @onclick="NavigateToRegistrarCobro" class="menu-button">
+                    <div class="img-container">
+                        <img src="/Cobro.png" alt="Registrar Cobro" />
+                    </div>
+                    <span>Registrar Cobro</span>
                 </button>
             </div>
 
-            <div class="menu-item" style="flex: 1; min-width: 200px; max-width: 220px;">
-                <button @onclick="NavigateToHistorialPrestamo" style="width: 100%; padding: 30px; background-color: #0C3E9F; color: white; border: none; border-radius: 15px; display: flex; flex-direction: column; align-items: center; box-shadow: 0px 10px 25px rgba(0,0,0,0.3); transition: transform 0.3s;">
-                    <img src="/Historial prestamo.png" alt="Historial Préstamo" style="width: 70px; height: 70px; margin-bottom: 15px;" />
-                    <span style="font-size: 20px; font-weight: bold;">Historial Préstamo</span>
+            <div class="menu-item">
+                <button @onclick="NavigateToHistorialPrestamo" class="menu-button">
+                    <div class="img-container">
+                        <img src="/Historial prestamo.png" alt="Historial Préstamo" />
+                    </div>
+                    <span>Historial Préstamo</span>
                 </button>
             </div>
 
-            <div class="menu-item" style="flex: 1; min-width: 200px; max-width: 220px;">
-                <button @onclick="NavigateToVisionGeneral" style="width: 100%; padding: 30px; background-color: #0C3E9F; color: white; border: none; border-radius: 15px; display: flex; flex-direction: column; align-items: center; box-shadow: 0px 10px 25px rgba(0,0,0,0.3); transition: transform 0.3s;">
-                    <img src="/Vision General.png" alt="Visión General" style="width: 70px; height: 70px; margin-bottom: 15px;" />
-                    <span style="font-size: 20px; font-weight: bold;">Visión General</span>
+            <div class="menu-item">
+                <button @onclick="NavigateToVisionGeneral" class="menu-button">
+                    <div class="img-container">
+                        <img src="/Vision General.png" alt="Visión General" />
+                    </div>
+                    <span>Visión General</span>
                 </button>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .menu-button {
+        width: 100%;
+        padding: 25px;
+        background-color: #0C3E9F;
+        color: white;
+        border: none;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, background-color 0.3s ease;
+        cursor: pointer;
+    }
+
+        .menu-button:hover {
+            transform: scale(1.05);
+            background-color: #1453B4;
+        }
+
+    .img-container {
+        width: 80px;
+        height: 80px;
+        overflow: hidden;
+        margin-bottom: 15px;
+        border-radius: 50%;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.4s ease;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+            .img-container img:hover {
+                transform: scale(1.15);
+            }
+
+    .menu-button span {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 10px;
+        text-transform: uppercase;
+        color: #f0f4fa;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu-item {
+        flex: 1;
+        min-width: 200px;
+        max-width: 220px;
+    }
+</style>
 
 @code {
     private void NavigateToClients()

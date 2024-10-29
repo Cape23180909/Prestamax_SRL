@@ -1,3 +1,75 @@
 ﻿@page "/logout"
 
-<h3>Cierre de sesión</h3>
+<div class="logout-container">
+    <h3 class="logout-title">¿Estás seguro de que deseas cerrar sesión?</h3>
+    <button @onclick="ConfirmLogout" class="logout-button">Cerrar sesión</button>
+    <button @onclick="CancelLogout" class="cancel-button">Cancelar</button>
+</div>
+
+<style>
+    .logout-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: linear-gradient(to right, #1A2E5B, #0C3E9F);
+        color: white;
+    }
+
+    .logout-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .logout-button {
+        padding: 10px 20px;
+        background-color: #0C3E9F;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-bottom: 10px;
+    }
+
+        .logout-button:hover {
+            background-color: #1A2E5B;
+        }
+
+    .cancel-button {
+        padding: 10px 20px;
+        background-color: #f44336;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .cancel-button:hover {
+            background-color: #d32f2f;
+        }
+</style>
+
+@code {
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private void ConfirmLogout()
+    {
+        // Lógica para cerrar sesión (reemplaza esto con tu implementación de cierre de sesión)
+        // Ejemplo: await authenticationService.LogoutAsync();
+
+        // Redirigir a la página de inicio o de login después de cerrar sesión
+        NavigationManager.NavigateTo("/"); // Cambia "/login" a la ruta deseada
+    }
+
+    private void CancelLogout()
+    {
+        // Redirigir a la página anterior o a una ruta específica
+        NavigationManager.NavigateTo("/menu"); // Cambia "/" a la ruta deseada
+    }
+}
