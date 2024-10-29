@@ -52,6 +52,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 // Configuración de servicios personalizados.
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 builder.Services.AddScoped<ClienteService>();
+builder.Services.AddScoped<PrestamoService>();
 builder.Services.AddBlazorBootstrap();
 
 var app = builder.Build();

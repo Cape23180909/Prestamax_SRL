@@ -1,0 +1,113 @@
+﻿@page "/Clientes/SeleccionarCliente"
+@inject ClienteService clienteService
+@inject NavigationManager navigationManager
+
+<PageTitle>Consulta de clientes</PageTitle>
+<div class="container-fluid vh-100 d-flex flex-column justify-content-center">
+    <div class="card shadow-lg w-100 h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title text-center w-100">Consulta de Clientes</h3>
+        </div>
+
+        <div class="card-body overflow-auto">
+            <div class="row mb-4 align-items-end">
+                <div class="col-md-4">
+                    <label for="Filtro" class="form-label">Filtrar por:</label>
+                    <select @bind="filtro" class="form-select">
+                        <option value="0">Seleccione una opción</option>
+                        <option value="Cedula">Cédula</option>
+                        <option value="Nombres">Nombres</option>
+                        <option value="Apellidos">Apellidos</option>
+                        <option value="Ciudad">Ciudad</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="ValorFiltro" class="form-label">Búsqueda:</label>
+                    <div class="input-group">
+                        <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
+                        <button @onclick="Buscar" class="btn btn-outline-primary" type="button">
+                            <span class="bi bi-search"></span> Buscar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-hover table-striped text-center">
+                <thead class="table-white">
+                    <tr>
+                        <th>ClienteId</th>
+                        <th>Cédula</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Dirección</th>
+                        <th>Teléfono</th>
+                        <th>Ciudad</th>
+                        <th class="text-end">Seleccionar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cliente in listarclientes)
+                    {
+                        <tr>
+                            <td>@cliente.ClienteId</td>
+                            <td>@cliente.Cedula</td>
+                            <td>@cliente.Nombres</td>
+                            <td>@cliente.Apellidos</td>
+                            <td>@cliente.Direccion</td>
+                            <td>@cliente.Telefono</td>
+                            <td>@cliente.Ciudad</td>
+                            <td class="text-end">
+                                <input type="checkbox" @onclick="() => SeleccionarCliente(cliente.ClienteId)" style="width: 1.5em; height: 1.5em;" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between">
+            <p class="mb-0">Total de clientes: @listarclientes.Count</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Clientes> listarclientes = new List<Clientes>();
+    public string filtro = "0";
+    public string valorFiltro = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        listarclientes = await clienteService.ObtenerTodos();
+    }
+
+    private void SeleccionarCliente(int clienteId)
+    {
+        navigationManager.NavigateTo($"/Prestamo/Create?clienteId={clienteId}");
+    }
+
+    public async Task Buscar()
+    {
+        if (string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            listarclientes = await clienteService.Listar(p => true);
+        }
+        else if (filtro == "Cedula")
+        {
+            listarclientes = await clienteService.Listar(c => c.Cedula.Contains(valorFiltro));
+        }
+        else if (filtro == "Nombres")
+        {
+            listarclientes = await clienteService.Listar(c => c.Nombres.Contains(valorFiltro));
+        }
+        else if (filtro == "Apellidos")
+        {
+            listarclientes = await clienteService.Listar(c => c.Apellidos.Contains(valorFiltro));
+        }
+        else if (filtro == "Ciudad")
+        {
+            listarclientes = await clienteService.Listar(c => c.Ciudad.Contains(valorFiltro));
+        }
+    }
+}

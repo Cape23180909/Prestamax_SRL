@@ -62,4 +62,9 @@ public class ClienteService
             .Where(criterio)
             .ToListAsync();
     }
+    public async Task<List<Clientes>> ObtenerTodos()
+    {
+        return await _contexto.Clientes.ToListAsync();
+    }
+
 }

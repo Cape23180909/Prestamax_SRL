@@ -1,0 +1,54 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Prestamax_SRL.Migrations
+{
+    /// <inheritdoc />
+    public partial class Prestamo : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Prestamos",
+                columns: table => new
+                {
+                    PrestamosId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    MontoPrestado = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Interes = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Cuotas = table.Column<int>(type: "int", nullable: false),
+                    FormaPago = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    MontoCuota = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    TotalInteres = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    MontoTotalPagar = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Prestamos", x => x.PrestamosId);
+                    table.ForeignKey(
+                        name: "FK_Prestamos_Clientes_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prestamos_ClienteId",
+                table: "Prestamos",
+                column: "ClienteId");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Prestamos");
+        }
+    }
+}

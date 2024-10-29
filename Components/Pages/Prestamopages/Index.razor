@@ -1,0 +1,58 @@
+﻿@page "/Prestamo/Index"
+@inject ClienteService clienteService
+@inject PrestamoService prestamoService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Consulta de Préstamos</PageTitle>
+<div class="container-fluid vh-100 d-flex flex-column justify-content-center">
+    <div class="card shadow-lg w-100 h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title text-center w-100">Consulta de Préstamos</h3>
+            <div class="mt-4">
+                <a href="/Prestamo/Create" class="btn btn-primary d-flex align-items-center">
+                    <span class="bi bi-plus-square"></span> Crear
+                </a>
+            </div>
+        </div>
+
+        <div class="card-body overflow-auto">
+            <table class="table table-hover table-striped text-center">
+                <thead class="table-white">
+                    <tr>
+                        <th>Préstamo ID</th>
+                        <th>Cliente</th>
+                        <th>Monto Prestado</th>
+                        <th>Interés</th>
+                        <th>Cuotas</th>
+                        <th>Forma de Pago</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var prestamo in listaPrestamos)
+                    {
+                        <tr>
+                            <td>@prestamo.PrestamosId</td>
+                            <td>@prestamo.Cliente.Nombres @prestamo.Cliente.Apellidos</td>
+                            <td>@prestamo.MontoPrestado</td>
+                            <td>@prestamo.Interes %</td>
+                            <td>@prestamo.Cuotas</td>
+                            <td>@prestamo.FormaPago</td>
+                            <td>@prestamo.Fecha?.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    public List<Prestamos> listaPrestamos = new List<Prestamos>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        listaPrestamos = await prestamoService.ListarPrestamosConClientes();
+    }
+}

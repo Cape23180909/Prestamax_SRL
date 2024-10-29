@@ -1,0 +1,195 @@
+﻿@page "/Prestamo/Create"
+@inject PrestamoService prestamoService
+@inject ClienteService clienteService
+@inject NavigationManager navigationManager
+@inject ToastService toastService
+
+<PageTitle>Registrar Préstamo</PageTitle>
+
+<EditForm Model="prestamo" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="container-fluid vh-95 d-flex justify-content-center align-items-center">
+        <div class="card shadow-lg" style="width: 1400px; min-height: 600px; border-radius: 15px;">
+            <div class="card-header text-white" style="background-color: #0062cc; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                <h3 class="card-title text-center">Registrar Préstamo</h3>
+                <button type="button" class="btn btn-light" @onclick="RedirigirABusquedaCliente">
+                    <span class="bi bi-person-search"></span> Buscar Cliente
+                </button>
+            </div>
+
+            <div class="card-body" style="background-color: #f9f9f9;">
+                <div class="mb-4">
+                    <h5 class="text-primary">Información del Cliente Seleccionado</h5>
+                    @if (cliente != null)
+                    {
+                        <div class="card mb-3" style="border-radius: 10px; background-color: #e7f0ff;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label><strong>Nombre:</strong></label>
+                                        <span>@cliente.Nombres @cliente.Apellidos</span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label><strong>Cédula:</strong></label>
+                                        <span>@cliente.Cedula</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label><strong>Dirección:</strong></label>
+                                        <span>@cliente.Direccion</span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label><strong>Teléfono:</strong></label>
+                                        <span>@cliente.Telefono</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label><strong>Ciudad:</strong></label>
+                                        <span>@cliente.Ciudad</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <strong>Nota:</strong> Selecciona un cliente para asociarlo al préstamo.
+                        </div>
+                    }
+                </div>
+
+                <!-- Detalles del Préstamo -->
+                <h5 class="text-primary">Detalles del Préstamo</h5>
+                <div class="mb-3">
+                    <label for="montoPrestado" class="form-label">Monto Prestado</label>
+                    <InputNumber id="montoPrestado" class="form-control" @bind-Value="prestamo.MontoPrestado" />
+                    <ValidationMessage For="@(() => prestamo.MontoPrestado)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="interes" class="form-label">Interés (%)</label>
+                    <InputNumber id="interes" class="form-control" @bind-Value="prestamo.Interes" />
+                    <ValidationMessage For="@(() => prestamo.Interes)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="cuotas" class="form-label">Cuotas</label>
+                    <InputNumber id="cuotas" class="form-control" @bind-Value="prestamo.Cuotas" />
+                    <ValidationMessage For="@(() => prestamo.Cuotas)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="formaPago" class="form-label">Forma de Pago</label>
+                    <InputText id="formaPago" class="form-control" @bind-Value="prestamo.FormaPago" />
+                    <ValidationMessage For="@(() => prestamo.FormaPago)" />
+                </div>
+
+                <!-- Campo para la Fecha -->
+                <div class="mb-3">
+                    <label for="fecha" class="form-label">Fecha del Préstamo</label>
+                    <InputDate id="fecha" class="form-control" @bind-Value="prestamo.Fecha" />
+                    <ValidationMessage For="@(() => prestamo.Fecha)" />
+                </div>
+            </div>
+
+            <div class="card-footer text-center" style="background-color: #f1f1f1;">
+                <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">
+                    <span class="bi bi-plus-circle"></span> Nuevo
+                </button>
+                <button type="submit" class="btn btn-outline-success">
+                    <span class="bi bi-check-circle-fill"></span> Guardar
+                </button>
+                <button type="button" class="btn btn-outline-danger" @onclick="Retroceder">
+                    <span class="bi bi-arrow-bar-left"></span> Retroceder
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private Clientes cliente;
+    public Prestamos prestamo = new Prestamos();
+    private bool existe = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Obtener el clienteId de la URL
+        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+        if (query.TryGetValue("clienteId", out var clienteId))
+        {
+            // Cargar el cliente seleccionado
+            cliente = await clienteService.Buscar(int.Parse(clienteId));
+        }
+    }
+
+    private void RedirigirABusquedaCliente()
+    {
+        navigationManager.NavigateTo("/Clientes/SeleccionarCliente");
+    }
+
+    public async Task Nuevo()
+    {
+        prestamo = new Prestamos();
+        cliente = null; // Reiniciar cliente
+    }
+
+    private void Retroceder()
+    {
+        navigationManager.NavigateTo("/Prestamo/Index");
+    }
+
+    public async Task Guardar()
+    {
+        if (cliente == null)
+        {
+            toastService.Notify(new ToastMessage(ToastType.Success,
+                iconName: IconName.None,
+                title: "Error",
+                helpText: "",
+                message: "Debes seleccionar un cliente para asociar al préstamo."));
+            return;
+        }
+
+        // Validar que la fecha esté establecida
+        if (prestamo.Fecha == null)
+        {
+            toastService.Notify(new ToastMessage(ToastType.Success,
+                iconName: IconName.None,
+                title: "Error",
+                helpText: "",
+                message: "La fecha del préstamo es obligatoria."));
+            return;
+        }
+
+        // Asociar el cliente al préstamo
+        prestamo.ClienteId = cliente.ClienteId;
+
+        // Lógica para guardar el préstamo
+        prestamo.ClienteId = cliente.ClienteId;
+        var guardado = await prestamoService.Guardar(prestamo);
+        if (guardado)
+        {
+            toastService.Notify(new ToastMessage(ToastType.Success,
+                iconName: IconName.None,
+                title: "Guardado",
+                helpText: "",
+                message: "El préstamo se ha guardado correctamente."));
+            Nuevo(); // Reiniciar el formulario
+            navigationManager.NavigateTo("/Prestamo/Index"); // Volver a la lista de préstamos
+        }
+        else
+        {
+            toastService.Notify(new ToastMessage(ToastType.Success,
+                iconName: IconName.None,
+                title: "Error",
+                helpText: "",
+                message: "Hubo un problema al guardar el préstamo. Intenta de nuevo."));
+        }
+    }
+}
