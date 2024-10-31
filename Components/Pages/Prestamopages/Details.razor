@@ -1,0 +1,137 @@
+﻿@page "/Prestamo/Details/{prestamoId:int}"
+@inject ClienteService clienteService
+@inject PrestamoService prestamoService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Detalle del Préstamo</PageTitle>
+
+<div class="container-fluid vh-95 d-flex justify-content-center align-items-center">
+    <div class="card shadow-lg" style="width: 1400px; min-height: 600px; border-radius: 15px;">
+        <!-- Encabezado -->
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; background-color: #f1f1f1;">
+            <div style="flex: 1; text-align: center;">
+                <h3 class="card-title">Detalle del Préstamo</h3>
+            </div>
+        </div>
+
+        <div class="card-body" style="background-color: #f9f9f9;">
+            <!-- Información del Cliente Seleccionado -->
+            <div class="mb-4">
+                <h5 class="text-primary">Información del Cliente</h5>
+                @if (cliente != null)
+                {
+                    <div class="card mb-3" style="border-radius: 10px; background-color: #e7f0ff;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label><strong>Nombre:</strong></label>
+                                    <span>@cliente.Nombres @cliente.Apellidos</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label><strong>Cédula:</strong></label>
+                                    <span>@cliente.Cedula</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label><strong>Dirección:</strong></label>
+                                    <span>@cliente.Direccion</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label><strong>Teléfono:</strong></label>
+                                    <span>@cliente.Telefono</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label><strong>Ciudad:</strong></label>
+                                    <span>@cliente.Ciudad</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <strong>Nota:</strong> No se encontró información del cliente.
+                    </div>
+                }
+            </div>
+
+            <!-- Detalles del Préstamo -->
+            <h5 class="text-primary">Detalles del Préstamo</h5>
+
+            <div class="mb-3">
+                <label class="form-label"><strong>Fecha del Préstamo:</strong></label>
+                <span>@prestamo.Fecha?.ToShortDateString()</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><strong>Monto Prestado:</strong></label>
+                <span>@prestamo.MontoPrestado.ToString("C")</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><strong>Interés (%):</strong></label>
+                <span>@prestamo.Interes</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><strong>Cuotas:</strong></label>
+                <span>@prestamo.Cuotas</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><strong>Forma de Pago:</strong></label>
+                <span>@prestamo.FormaPago</span>
+            </div>
+
+            <!-- Campos calculados -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Monto por Cuota:</strong></label>
+                <span>@prestamo.MontoCuota?.ToString("C")</span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label"><strong>Total Interés:</strong></label>
+                <span>@prestamo.TotalInteres?.ToString("C")</span>
+            </div>
+            <div class="mb-3">
+                <label class="form-label"><strong>Monto Total a Pagar:</strong></label>
+                <span>@prestamo.MontoTotalPagar?.ToString("C")</span>
+            </div>
+        </div>
+
+        <!-- Footer con el botón Retroceder -->
+        <div class="card-footer text-center" style="background-color: #f1f1f1;">
+            <button type="button" class="btn btn-outline-primary" @onclick="Retroceder">
+                <span class="bi bi-arrow-bar-left"></span> Retroceder
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Clientes cliente;
+    public Prestamos prestamo = new Prestamos();
+
+    [Parameter]
+    public int prestamoId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar el préstamo a mostrar
+        prestamo = await prestamoService.Buscar(prestamoId);
+
+        if (prestamo.ClienteId != 0) // Si hay un cliente asociado
+        {
+            cliente = await clienteService.Buscar(prestamo.ClienteId);
+        }
+    }
+
+    private async Task Retroceder()
+    {
+        navigationManager.NavigateTo("/Prestamo/Index");
+    }
+}

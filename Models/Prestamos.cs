@@ -14,21 +14,30 @@ public class Prestamos
     [ForeignKey("ClienteId")]
     public Clientes Cliente { get; set; }
 
+    [Required(ErrorMessage = "El monto prestado es obligatorio.")]
+    [Range(1, (double)decimal.MaxValue, ErrorMessage = "El monto prestado debe ser mayor a 0.")]
     public decimal MontoPrestado { get; set; }
 
+    [Required(ErrorMessage = "El interés es obligatorio.")]
+    [Range(0.1, 100, ErrorMessage = "El interés debe estar entre 0.1% y 100%.")]
     public decimal Interes { get; set; }
 
     public int Cuotas { get; set; }
 
+    [Required(ErrorMessage = "La forma de pago es obligatoria.")]
+    [StringLength(50, ErrorMessage = "La forma de pago no puede exceder los 50 caracteres.")]
     public string FormaPago { get; set; }
 
     [Required(ErrorMessage = "La fecha es obligatoria.")]
     [DataType(DataType.Date)]
     public DateTime? Fecha { get; set; }
 
+    [Range(0, (double)decimal.MaxValue, ErrorMessage = "El monto por cuota debe ser un valor positivo.")]
     public decimal? MontoCuota { get; set; }
 
+    [Range(0, (double)decimal.MaxValue, ErrorMessage = "El total de interés debe ser un valor positivo.")]
     public decimal? TotalInteres { get; set; }
 
+    [Range(0, (double)decimal.MaxValue, ErrorMessage = "El monto total a pagar debe ser un valor positivo.")]
     public decimal? MontoTotalPagar { get; set; }
 }

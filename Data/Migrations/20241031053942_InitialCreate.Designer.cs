@@ -12,7 +12,7 @@ using Prestamax_SRL.Data;
 namespace Prestamax_SRL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241030225832_InitialCreate")]
+    [Migration("20241031053942_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -280,7 +280,8 @@ namespace Prestamax_SRL.Migrations
 
                     b.Property<string>("FormaPago")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("Interes")
                         .HasColumnType("decimal(18,2)");

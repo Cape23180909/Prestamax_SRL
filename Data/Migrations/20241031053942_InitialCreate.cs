@@ -39,7 +39,7 @@ namespace Prestamax_SRL.Migrations
                     MontoPrestado = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Interes = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Cuotas = table.Column<int>(type: "int", nullable: false),
-                    FormaPago = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FormaPago = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MontoCuota = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     TotalInteres = table.Column<decimal>(type: "decimal(18,2)", nullable: true),

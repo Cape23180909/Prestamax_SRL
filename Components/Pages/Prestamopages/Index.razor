@@ -27,6 +27,9 @@
                         <th>Cuotas</th>
                         <th>Forma de Pago</th>
                         <th>Fecha</th>
+                        <th>MontoCuota</th>
+                        <th>TotalInteres</th>
+                        <th>MontoTotalPagar</th>
                         <th>Ver</th>
                         <th>Editar</th>
                         <th>Eliminar</th>
@@ -42,19 +45,22 @@
                             <td>@prestamo.Interes %</td>
                             <td>@prestamo.Cuotas</td>
                             <td>@prestamo.FormaPago</td>
-                            <td>@prestamo.Fecha?.ToString("dd/MM/yyyy")</td
+                            <td>@prestamo.Fecha?.ToString("dd/MM/yyyy")</td>
+                            <td>@prestamo.MontoCuota</td>
+                            <td>@prestamo.TotalInteres</td>
+                            <td>@prestamo.MontoTotalPagar</td>
                                <td>
-                                <a href="/Cliente/Details/@prestamo.ClienteId" class="btn btn-sm btn-outline-info">
+                                <a href="/Prestamo/Details/@prestamo.PrestamosId" class="btn btn-sm btn-outline-info">
                                     <span class="bi bi-eye"></span>
                                 </a>
                             </td>
                             <td>
-                                <a href="/Cliente/Edit/@prestamo.ClienteId" class="btn btn-sm btn-outline-warning">
+                                <a href="/Prestamo/Edit/@prestamo.PrestamosId" class="btn btn-sm btn-outline-warning">
                                     <span class="bi bi-pencil-square"></span>
                                 </a>
                             </td>
                             <td>
-                                <a href="/Cliente/Delete/@prestamo.ClienteId" class="btn btn-sm btn-outline-danger">
+                                <a href="/Prestamo/Delete/@prestamo.PrestamosId" class="btn btn-sm btn-outline-danger">
                                     <span class="bi bi-trash"></span>
                                 </a>
                             </td>

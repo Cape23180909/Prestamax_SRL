@@ -1,11 +1,11 @@
-﻿@page "/Prestamo/Create"
+﻿@page "/Prestamo/Edit/{prestamoId:int}"
 @inject ClienteService clienteService
 @inject PrestamoService prestamoService
 @inject NavigationManager navigationManager
 @inject ToastService toastService
 @rendermode InteractiveServer
 
-<PageTitle>Registrar Préstamo</PageTitle>
+<PageTitle>Editar Préstamo</PageTitle>
 
 <EditForm Model="prestamo" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
@@ -15,7 +15,7 @@
             <!-- Encabezado y botón Buscar Cliente -->
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; background-color: #f1f1f1;">
                 <div style="flex: 1; text-align: center;">
-                    <h3 class="card-title">Registrar Préstamo</h3>
+                    <h3 class="card-title">Editar Préstamo</h3>
                 </div>
                 <button type="button" class="btn btn-primary" style="border-radius: 5px;" @onclick="RedirigirABusquedaCliente">
                     <span class="bi bi-person-fill-check"></span> Buscar Cliente
@@ -115,7 +115,7 @@
                 </div>
 
                 <button type="button" class="btn btn-outline-secondary" @onclick="CalcularMontos">
-                    <span class="bi bi-calculator"></span> Generar Pr&eacute;stamo
+                    <span class="bi bi-calculator"></span> Generar Préstamo
                 </button>
             </div>
 
@@ -138,19 +138,18 @@
 @code {
     private Clientes cliente;
     public Prestamos prestamo = new Prestamos();
-    private EditContext editContext;
+
+    [Parameter]
+    public int prestamoId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        // Inicializa el EditContext al cargar el componente
-        editContext = new EditContext(prestamo);
+        // Cargar el préstamo a editar
+        prestamo = await prestamoService.Buscar(prestamoId);
 
-        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
-        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
-        if (query.TryGetValue("clienteId", out var clienteId))
+        if (prestamo.ClienteId != 0) // Si hay un cliente asociado
         {
-            cliente = await clienteService.Buscar(int.Parse(clienteId));
-            prestamo.ClienteId = cliente.ClienteId;
+            cliente = await clienteService.Buscar(prestamo.ClienteId);
         }
     }
 
@@ -172,36 +171,18 @@
 
     private async Task Guardar()
     {
-        if (cliente == null)
+        if (cliente != null)
         {
+
             toastService.Notify(new(ToastType.Success,
             iconName: IconName.None,
-            title: "Error",
+            title: "Guardado Exitoso",
             helpText: "",
-            message: "Por favor, selecciona un cliente antes de guardar el préstamo."));
-            return;
+            message: "El préstamo se ha modificado correctamente."));
+            CalcularMontos(); // Calculamos los montos antes de guardar
+            await prestamoService.Guardar(prestamo); // Método para actualizar el préstamo
+            Retroceder();
         }
-
-        // Verificar si el modelo es válido
-        if (!editContext.Validate())
-        {
-            toastService.Notify(new(ToastType.Success,
-            iconName: IconName.None,
-            title: "Error de Validación",
-            helpText: "",
-            message: "Por favor, completa todos los campos requeridos correctamente."));
-            return;
-        }
-
-        CalcularMontos(); // Calculamos los montos antes de guardar
-        await prestamoService.Guardar(prestamo);
-
-        toastService.Notify(new(ToastType.Success,
-        iconName: IconName.None,
-        title: "Guardado Exitoso",
-        helpText: "",
-        message: "El préstamo se ha guardado correctamente."));
-        await Retroceder();
     }
 
     private void CalcularMontos()
@@ -209,6 +190,5 @@
         prestamo.TotalInteres = prestamo.MontoPrestado * (prestamo.Interes / 100);
         prestamo.MontoTotalPagar = prestamo.MontoPrestado + prestamo.TotalInteres;
         prestamo.MontoCuota = prestamo.MontoTotalPagar / prestamo.Cuotas;
-
     }
 }

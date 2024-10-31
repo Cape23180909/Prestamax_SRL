@@ -277,7 +277,8 @@ namespace Prestamax_SRL.Migrations
 
                     b.Property<string>("FormaPago")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("Interes")
                         .HasColumnType("decimal(18,2)");

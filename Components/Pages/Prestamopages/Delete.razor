@@ -1,0 +1,108 @@
+﻿@page "/Prestamo/Delete/{prestamoId:int}"
+@inject PrestamoService prestamoService
+@inject ClienteService clienteService
+@inject NavigationManager navigationManager
+@inject ToastService toastService
+@rendermode InteractiveServer
+
+<PageTitle>Eliminar Préstamo</PageTitle>
+
+@if (prestamo != null)
+{
+    <div class="container mt-5">
+        <div class="card shadow-lg border-danger rounded-3">
+            <div class="card-header text-center bg-danger text-white py-4 rounded-top">
+                <h3 class="font-weight-bold">Eliminar Préstamo</h3>
+                <p class="mb-0">Confirma que deseas eliminar este préstamo</p>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="bg-light p-3 rounded-3 border border-danger">
+                            <h5 class="text-primary">Información del Préstamo:</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Préstamo ID:</strong> <span class="text-muted">@prestamo.PrestamosId</span></li>
+                                <li><strong>Monto Prestado:</strong> <span class="text-muted">@prestamo.MontoPrestado.ToString("C")</span></li>
+                                <li><strong>Interés:</strong> <span class="text-muted">@prestamo.Interes %</span></li>
+                                <li><strong>Cuotas:</strong> <span class="text-muted">@prestamo.Cuotas</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light p-3 rounded-3 border border-danger">
+                            <h5 class="text-primary">Información del Cliente:</h5>
+                            <ul class="list-unstyled">
+                                @if (cliente != null)
+                                {
+                                    <li><strong>Cliente ID:</strong> <span class="text-muted">@cliente.ClienteId</span></li>
+                                    <li><strong>Nombres:</strong> <span class="text-muted">@cliente.Nombres</span></li>
+                                    <li><strong>Apellidos:</strong> <span class="text-muted">@cliente.Apellidos</span></li>
+                                    <li><strong>Cédula:</strong> <span class="text-muted">@cliente.Cedula</span></li>
+                                }
+                                else
+                                {
+                                    <li class="text-danger">Información del cliente no encontrada.</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <h5 class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> ¡Cuidado!</h5>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <button type="button" class="btn btn-outline-danger btn-lg" @onclick="EliminarPrestamo">
+                    <i class="bi bi-trash-fill"></i> Eliminar
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-lg" @onclick="Retroceder">
+                    <i class="bi bi-box-arrow-left"></i> Retroceder
+                </button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p class="text-danger text-center mt-5">Préstamo no encontrado.</p>
+}
+
+@code {
+    [Parameter]
+    public int prestamoId { get; set; }
+    public Prestamos? prestamo { get; set; }
+    private Clientes? cliente; // Cambia a Clientes? para permitir nulos
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Cargar el préstamo a mostrar
+        prestamo = await prestamoService.Buscar(prestamoId);
+
+        if (prestamo != null && prestamo.ClienteId != 0) // Si hay un cliente asociado
+        {
+            cliente = await clienteService.Buscar(prestamo.ClienteId);
+        }
+    }
+
+    public async Task EliminarPrestamo()
+    {
+        if (prestamo == null)
+        {
+            return;
+        }
+        if (await prestamoService.Eliminar(prestamoId))
+        {
+            toastService.Notify(new(ToastType.Success,
+            iconName: IconName.None,
+            title: "Eliminación Exitosa",
+            helpText: "",
+            message: "El préstamo se ha eliminado correctamente."));
+            Retroceder();
+        }
+    }
+
+    public async Task Retroceder()
+    {
+        navigationManager.NavigateTo("/Prestamo/Index");
+    }
+}
