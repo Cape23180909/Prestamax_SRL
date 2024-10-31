@@ -12,7 +12,7 @@ using Prestamax_SRL.Data;
 namespace Prestamax_SRL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241021202512_InitialCreate")]
+    [Migration("20241030225832_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -260,6 +260,50 @@ namespace Prestamax_SRL.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("Prestamos", b =>
+                {
+                    b.Property<int>("PrestamosId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestamosId"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Cuotas")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Fecha")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FormaPago")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Interes")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("MontoCuota")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("MontoPrestado")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("MontoTotalPagar")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("TotalInteres")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("PrestamosId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("Prestamos");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -309,6 +353,17 @@ namespace Prestamax_SRL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Prestamos", b =>
+                {
+                    b.HasOne("Prestamax_SRL.Models.Clientes", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
                 });
 #pragma warning restore 612, 618
         }

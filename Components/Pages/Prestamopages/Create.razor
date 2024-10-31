@@ -1,12 +1,12 @@
 ﻿@page "/Prestamo/Create"
-@inject PrestamoService prestamoService
 @inject ClienteService clienteService
+@inject PrestamoService prestamoService
 @inject NavigationManager navigationManager
-@inject ToastService toastService
+@rendermode InteractiveServer
 
 <PageTitle>Registrar Préstamo</PageTitle>
 
-<EditForm Model="prestamo" OnValidSubmit="Guardar">
+<EditForm Model="prestamo" OnValidSubmit="Guardar" FormName="crearPrestamoForm">
     <DataAnnotationsValidator />
 
     <div class="container-fluid vh-95 d-flex justify-content-center align-items-center">
@@ -114,17 +114,17 @@
 @code {
     private Clientes cliente;
     public Prestamos prestamo = new Prestamos();
-    private bool existe = false;
+    private List<Clientes> listaClientes = new List<Clientes>();
 
     protected override async Task OnInitializedAsync()
     {
-        // Obtener el clienteId de la URL
         var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
         var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
         if (query.TryGetValue("clienteId", out var clienteId))
         {
             // Cargar el cliente seleccionado
             cliente = await clienteService.Buscar(int.Parse(clienteId));
+            prestamo.ClienteId = cliente.ClienteId; // Asociar el cliente seleccionado al préstamo
         }
     }
 
@@ -133,7 +133,7 @@
         navigationManager.NavigateTo("/Clientes/SeleccionarCliente");
     }
 
-    public async Task Nuevo()
+    public void Nuevo()
     {
         prestamo = new Prestamos();
         cliente = null; // Reiniciar cliente
@@ -144,52 +144,17 @@
         navigationManager.NavigateTo("/Prestamo/Index");
     }
 
-    public async Task Guardar()
+    private async Task Guardar()
     {
-        if (cliente == null)
+        if (cliente != null)
         {
-            toastService.Notify(new ToastMessage(ToastType.Success,
-                iconName: IconName.None,
-                title: "Error",
-                helpText: "",
-                message: "Debes seleccionar un cliente para asociar al préstamo."));
-            return;
+            await prestamoService.Guardar(prestamo); // Guardar el préstamo
+            Cancelar(); // Redireccionar a la página de inicio después de guardar
         }
+    }
 
-        // Validar que la fecha esté establecida
-        if (prestamo.Fecha == null)
-        {
-            toastService.Notify(new ToastMessage(ToastType.Success,
-                iconName: IconName.None,
-                title: "Error",
-                helpText: "",
-                message: "La fecha del préstamo es obligatoria."));
-            return;
-        }
-
-        // Asociar el cliente al préstamo
-        prestamo.ClienteId = cliente.ClienteId;
-
-        // Lógica para guardar el préstamo
-        prestamo.ClienteId = cliente.ClienteId;
-        var guardado = await prestamoService.Guardar(prestamo);
-        if (guardado)
-        {
-            toastService.Notify(new ToastMessage(ToastType.Success,
-                iconName: IconName.None,
-                title: "Guardado",
-                helpText: "",
-                message: "El préstamo se ha guardado correctamente."));
-            Nuevo(); // Reiniciar el formulario
-            navigationManager.NavigateTo("/Prestamo/Index"); // Volver a la lista de préstamos
-        }
-        else
-        {
-            toastService.Notify(new ToastMessage(ToastType.Success,
-                iconName: IconName.None,
-                title: "Error",
-                helpText: "",
-                message: "Hubo un problema al guardar el préstamo. Intenta de nuevo."));
-        }
+    private void Cancelar()
+    {
+        navigationManager.NavigateTo("/Prestamo/Index");
     }
 }

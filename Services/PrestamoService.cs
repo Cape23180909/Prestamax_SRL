@@ -4,60 +4,73 @@ using Prestamax_SRL.Models;
 using System.Linq.Expressions;
 
 namespace Prestamax_SRL.Services;
+public class PrestamoService
+{
+    private readonly IDbContextFactory<ApplicationDbContext> _dbFactory; // Cambiado a IDbContextFactory
 
-    public class PrestamoService
+    // Constructor que inicializa _dbFactory
+    public PrestamoService(IDbContextFactory<ApplicationDbContext> dbFactory)
     {
-    private readonly ApplicationDbContext _contexto;
-
-    public PrestamoService (ApplicationDbContext contexto)
-    {
-        _contexto = contexto ?? throw new ArgumentNullException(nameof(contexto));
+        _dbFactory = dbFactory ?? throw new ArgumentNullException(nameof(dbFactory)); // Inicializa el campo
     }
-    //Metodo Existe 
+
+    // Metodo Existe 
     public async Task<bool> Existe(int prestamoid)
     {
-        return await _contexto.Prestamos.AnyAsync(p => p.PrestamosId == prestamoid);
+        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+        return await contexto.Prestamos.AnyAsync(p => p.PrestamosId == prestamoid);
     }
-    //Metodo Insertar
+
+    // Metodo Insertar
     private async Task<bool> Insertar(Prestamos prestamo)
     {
-        _contexto.Prestamos.Add(prestamo);
-        return await _contexto.SaveChangesAsync() > 0;
+        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+        contexto.Prestamos.Add(prestamo);
+        return await contexto.SaveChangesAsync() > 0;
     }
-    //Metodo Modificar 
+
+    // Metodo Modificar 
     private async Task<bool> Modificar(Prestamos prestamo)
     {
-        _contexto.Update(prestamo);
-        return await _contexto
-            .SaveChangesAsync() > 0;
+        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+        contexto.Update(prestamo);
+        return await contexto.SaveChangesAsync() > 0;
     }
-    //Metod Guardar 
+
+    // Metodo Guardar 
     public async Task<bool> Guardar(Prestamos prestamo)
     {
+        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
         if (!await Existe(prestamo.PrestamosId))
             return await Insertar(prestamo);
         else
             return await Modificar(prestamo);
     }
-    //Metodo Eliminar
+
+    // Metodo Eliminar
     public async Task<bool> Eliminar(int id)
     {
-        var eliminado = await _contexto.Prestamos
+        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+        var eliminado = await contexto.Prestamos
             .Where(p => p.PrestamosId == id)
             .ExecuteDeleteAsync();
         return eliminado > 0;
     }
-    //Metodo Buscar 
+
+    // Metodo Buscar 
     public async Task<Prestamos?> Buscar(int id)
     {
-        return await _contexto.Prestamos
+        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+        return await contexto.Prestamos
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.PrestamosId == id);
     }
-    //Metodo Listar 
+
+    // Metodo Listar 
     public async Task<List<Prestamos>> Listar(Expression<Func<Prestamos, bool>> criterio)
     {
-        return await _contexto.Prestamos
+        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+        return await contexto.Prestamos
             .AsNoTracking()
             .Where(criterio)
             .ToListAsync();
@@ -65,8 +78,9 @@ namespace Prestamax_SRL.Services;
 
     public async Task<List<Prestamos>> ListarPrestamosConClientes()
     {
-        return await _contexto.Prestamos
-            .Include(p => p.Cliente) 
+        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+        return await contexto.Prestamos
+            .Include(p => p.Cliente)
             .ToListAsync();
     }
 }

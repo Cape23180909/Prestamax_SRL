@@ -257,7 +257,7 @@ namespace Prestamax_SRL.Migrations
                     b.ToTable("Clientes");
                 });
 
-            modelBuilder.Entity("Prestamax_SRL.Models.Prestamos", b =>
+            modelBuilder.Entity("Prestamos", b =>
                 {
                     b.Property<int>("PrestamosId")
                         .ValueGeneratedOnAdd()
@@ -272,6 +272,7 @@ namespace Prestamax_SRL.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("Fecha")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FormaPago")
@@ -351,7 +352,7 @@ namespace Prestamax_SRL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Prestamax_SRL.Models.Prestamos", b =>
+            modelBuilder.Entity("Prestamos", b =>
                 {
                     b.HasOne("Prestamax_SRL.Models.Clientes", "Cliente")
                         .WithMany()

@@ -6,11 +6,29 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prestamax_SRL.Migrations
 {
     /// <inheritdoc />
-    public partial class Prestamo : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Clientes",
+                columns: table => new
+                {
+                    ClienteId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Cedula = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nombres = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Apellidos = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ciudad = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clientes", x => x.ClienteId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Prestamos",
                 columns: table => new
@@ -22,7 +40,7 @@ namespace Prestamax_SRL.Migrations
                     Interes = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Cuotas = table.Column<int>(type: "int", nullable: false),
                     FormaPago = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MontoCuota = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     TotalInteres = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     MontoTotalPagar = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
@@ -49,6 +67,9 @@ namespace Prestamax_SRL.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Prestamos");
+
+            migrationBuilder.DropTable(
+                name: "Clientes");
         }
     }
 }
