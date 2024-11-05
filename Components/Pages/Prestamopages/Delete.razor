@@ -22,6 +22,8 @@
                             <h5 class="text-primary">Información del Préstamo:</h5>
                             <ul class="list-unstyled">
                                 <li><strong>Préstamo ID:</strong> <span class="text-muted">@prestamo.PrestamosId</span></li>
+                                <li><strong>Fecha Pago: </strong><span class="text-muted">@prestamo.Fecha?.ToString("dd/MM/yyyy")</span></li>
+                                <li><strong>Fecha Pago: </strong><span class="text-muted">@prestamo.FechaInicio.ToString("dd/MM/yyyy")</span></li>
                                 <li><strong>Monto Prestado:</strong> <span class="text-muted">@prestamo.MontoPrestado.ToString("C")</span></li>
                                 <li><strong>Interés:</strong> <span class="text-muted">@prestamo.Interes %</span></li>
                                 <li><strong>Cuotas:</strong> <span class="text-muted">@prestamo.Cuotas</span></li>
