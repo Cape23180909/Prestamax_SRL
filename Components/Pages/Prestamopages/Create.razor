@@ -89,15 +89,25 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="cuotas" class="form-label">Cuotas</label>
+                    <label for="cuotas" class="form-label">Cuotas:</label>
                     <InputNumber id="cuotas" class="form-control" @bind-Value="prestamo.Cuotas" />
                     <ValidationMessage For="@(() => prestamo.Cuotas)" />
                 </div>
 
                 <div class="mb-3">
-                    <label for="formaPago" class="form-label">Forma de Pago</label>
-                    <InputText id="formaPago" class="form-control" @bind-Value="prestamo.FormaPago" />
+                    <label for="formaPago" class="form-label">Forma de Pago:</label>
+                    <select id="formaPago" class="form-control" @bind="prestamo.FormaPago">
+                        <option value="">Selecciona una opción</option>
+                        <option value="Semanal">Semanal</option>
+                        <option value="Quincenal">Quincenal</option>
+                    </select>
                     <ValidationMessage For="@(() => prestamo.FormaPago)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="fecha" class="form-label">Fecha Pago:</label>
+                    <InputDate id="fecha" class="form-control" @bind-Value="prestamo.FechaInicio" readonly />
+                    <ValidationMessage For="@(() => prestamo.FechaInicio)" />
                 </div>
 
                 <!-- Campos calculados -->
@@ -206,9 +216,49 @@
 
     private void CalcularMontos()
     {
-        prestamo.TotalInteres = prestamo.MontoPrestado * (prestamo.Interes / 100);
+        // Calcular el total de interés y monto total a pagar
+        prestamo.TotalInteres = prestamo.MontoPrestado * prestamo.Interes / 100;
         prestamo.MontoTotalPagar = prestamo.MontoPrestado + prestamo.TotalInteres;
-        prestamo.MontoCuota = prestamo.MontoTotalPagar / prestamo.Cuotas;
 
+        // Calcular el monto de cuota solo si las cuotas están definidas
+        if (prestamo.Cuotas > 0)
+        {
+            prestamo.MontoCuota = prestamo.MontoTotalPagar / prestamo.Cuotas;
+
+            // Calcular la fecha de inicio en función de la forma de pago y cuotas
+            if (prestamo.Fecha.HasValue) // Verifica si la fecha tiene un valor
+            {
+                DateTime fechaCreacion = prestamo.Fecha.Value; // Obtener el valor de DateTime
+
+                // Calcular la fecha de inicio según la forma de pago
+                if (prestamo.FormaPago == "Semanal")
+                    prestamo.FechaInicio = fechaCreacion.AddDays(7); // Primer pago una semana después
+                else if (prestamo.FormaPago == "Quincenal")
+                    prestamo.FechaInicio = fechaCreacion.AddDays(15); // Primer pago 15 días después
+                                                                      // Puedes agregar más condiciones para otras formas de pago si es necesario
+            }
+        }
+        else
+        {
+            // Cuando Cuotas es 0 o indefinidas, calcular la fecha de inicio según la forma de pago
+            if (prestamo.Fecha.HasValue) // Verifica si la fecha tiene un valor
+            {
+                DateTime fechaCreacion = prestamo.Fecha.Value; // Obtener el valor de DateTime
+
+                // Calcular la fecha de inicio según la forma de pago
+                if (prestamo.FormaPago == "Semanal")
+                    prestamo.FechaInicio = fechaCreacion.AddDays(7); // Primer pago una semana después
+                else if (prestamo.FormaPago == "Quincenal")
+                    prestamo.FechaInicio = fechaCreacion.AddDays(15); // Primer pago 15 días después
+                                                                      // Puedes agregar más condiciones para otras formas de pago si es necesario
+            }
+            else
+            {
+                // Manejo en caso de que Fecha no tenga valor (podrías lanzar una excepción o asignar un valor por defecto)
+                throw new InvalidOperationException("La fecha de creación no puede ser nula.");
+            }
+
+            prestamo.MontoCuota = 0; // O usa null si el tipo lo permite
+        }
     }
 }
