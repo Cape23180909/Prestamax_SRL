@@ -26,9 +26,10 @@
                         <th>Interés</th>
                         <th>Cuotas</th>
                         <th>Forma de Pago</th>
-                        <th>Fecha</th>
+                        <th>Fecha Prestamo</th>
+                        <th>Fecha Pago</th>
                         <th>MontoCuota</th>
-                        <th>TotalInteres</th>
+                        <th>Total Interes</th>
                         <th>MontoTotalPagar</th>
                         <th>Ver</th>
                         <th>Editar</th>
@@ -46,6 +47,7 @@
                             <td>@prestamo.Cuotas</td>
                             <td>@prestamo.FormaPago</td>
                             <td>@prestamo.Fecha?.ToString("dd/MM/yyyy")</td>
+                            <td>@prestamo.FechaInicio.ToString("dd/MM/yyyy")</td>
                             <td>@prestamo.MontoCuota</td>
                             <td>@prestamo.TotalInteres</td>
                             <td>@prestamo.MontoTotalPagar</td>
