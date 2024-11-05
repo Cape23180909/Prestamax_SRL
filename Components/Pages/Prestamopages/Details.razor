@@ -65,7 +65,12 @@
 
             <div class="mb-3">
                 <label class="form-label"><strong>Fecha del Préstamo:</strong></label>
-                <span>@prestamo.Fecha?.ToShortDateString()</span>
+                <span>@prestamo.Fecha?.ToString("dd/MM/yyyy")</span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><strong>Fecha Pago:</strong></label>
+                <span>@prestamo.FechaInicio.ToString("dd/MM/yyyy")</span>
             </div>
 
             <div class="mb-3">
