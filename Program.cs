@@ -26,8 +26,9 @@ builder.Services.AddAuthentication(options =>
     .AddIdentityCookies();
 
 var ConStr = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContextFactory<ApplicationDbContext>(o => o.UseSqlServer(ConStr));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddDbContextFactory<ApplicationDbContext>(o =>
+    o.UseSqlServer(ConStr, options => options.CommandTimeout(120)) // Establece un tiempo de espera de 120 segundos
+);
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
