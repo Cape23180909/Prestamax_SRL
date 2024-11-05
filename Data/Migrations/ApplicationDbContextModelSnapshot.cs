@@ -275,6 +275,9 @@ namespace Prestamax_SRL.Migrations
                         .IsRequired()
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("FechaInicio")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("FormaPago")
                         .IsRequired()
                         .HasMaxLength(50)
