@@ -257,7 +257,46 @@ namespace Prestamax_SRL.Migrations
                     b.ToTable("Clientes");
                 });
 
-            modelBuilder.Entity("Prestamos", b =>
+            modelBuilder.Entity("Prestamax_SRL.Models.Cobros", b =>
+                {
+                    b.Property<int>("CobroId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CobroId"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ClientesClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("ImportePagar")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Mora")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("PrestamoId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PrestamosId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CobroId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("ClientesClienteId");
+
+                    b.HasIndex("PrestamoId");
+
+                    b.HasIndex("PrestamosId");
+
+                    b.ToTable("Cobros");
+                });
+
+            modelBuilder.Entity("Prestamax_SRL.Models.Prestamos", b =>
                 {
                     b.Property<int>("PrestamosId")
                         .ValueGeneratedOnAdd()
@@ -356,7 +395,34 @@ namespace Prestamax_SRL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Prestamos", b =>
+            modelBuilder.Entity("Prestamax_SRL.Models.Cobros", b =>
+                {
+                    b.HasOne("Prestamax_SRL.Models.Clientes", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Prestamax_SRL.Models.Clientes", null)
+                        .WithMany("Cobros")
+                        .HasForeignKey("ClientesClienteId");
+
+                    b.HasOne("Prestamax_SRL.Models.Prestamos", "Prestamo")
+                        .WithMany()
+                        .HasForeignKey("PrestamoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Prestamax_SRL.Models.Prestamos", null)
+                        .WithMany("Cobros")
+                        .HasForeignKey("PrestamosId");
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Prestamo");
+                });
+
+            modelBuilder.Entity("Prestamax_SRL.Models.Prestamos", b =>
                 {
                     b.HasOne("Prestamax_SRL.Models.Clientes", "Cliente")
                         .WithMany()
@@ -365,6 +431,16 @@ namespace Prestamax_SRL.Migrations
                         .IsRequired();
 
                     b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("Prestamax_SRL.Models.Clientes", b =>
+                {
+                    b.Navigation("Cobros");
+                });
+
+            modelBuilder.Entity("Prestamax_SRL.Models.Prestamos", b =>
+                {
+                    b.Navigation("Cobros");
                 });
 #pragma warning restore 612, 618
         }

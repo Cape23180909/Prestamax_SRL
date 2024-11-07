@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prestamax_SRL.Migrations
 {
     /// <inheritdoc />
-    public partial class NuevaMigracion : Migration
+    public partial class prestamoi : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,6 +57,66 @@ namespace Prestamax_SRL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Cobros",
+                columns: table => new
+                {
+                    CobroId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    PrestamoId = table.Column<int>(type: "int", nullable: false),
+                    Mora = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    ImportePagar = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    ClientesClienteId = table.Column<int>(type: "int", nullable: true),
+                    PrestamosId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cobros", x => x.CobroId);
+                    table.ForeignKey(
+                        name: "FK_Cobros_Clientes_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Cobros_Clientes_ClientesClienteId",
+                        column: x => x.ClientesClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteId");
+                    table.ForeignKey(
+                        name: "FK_Cobros_Prestamos_PrestamoId",
+                        column: x => x.PrestamoId,
+                        principalTable: "Prestamos",
+                        principalColumn: "PrestamosId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Cobros_Prestamos_PrestamosId",
+                        column: x => x.PrestamosId,
+                        principalTable: "Prestamos",
+                        principalColumn: "PrestamosId");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cobros_ClienteId",
+                table: "Cobros",
+                column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cobros_ClientesClienteId",
+                table: "Cobros",
+                column: "ClientesClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cobros_PrestamoId",
+                table: "Cobros",
+                column: "PrestamoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cobros_PrestamosId",
+                table: "Cobros",
+                column: "PrestamosId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Prestamos_ClienteId",
                 table: "Prestamos",
@@ -66,6 +126,9 @@ namespace Prestamax_SRL.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Cobros");
+
             migrationBuilder.DropTable(
                 name: "Prestamos");
 
