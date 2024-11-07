@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
-namespace Prestamax_SRL.Models;
-
+namespace Prestamax_SRL.Models
+{
     public class Clientes
     {
         [Key]
@@ -31,4 +31,7 @@ namespace Prestamax_SRL.Models;
         [Required(ErrorMessage = "Favor colocar la ciudad.")]
         [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", ErrorMessage = "La ciudad solo puede contener letras.")]
         public string Ciudad { get; set; }
+
+        public virtual ICollection<Cobros> Cobros { get; set; } // Relación con Cobros
     }
+}
