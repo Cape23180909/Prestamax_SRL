@@ -38,6 +38,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 builder.Services.AddScoped<ClienteService>();
 builder.Services.AddScoped<PrestamoService>();
+builder.Services.AddScoped<CobroService>();
 builder.Services.AddBlazorBootstrap();
 
 var app = builder.Build();
