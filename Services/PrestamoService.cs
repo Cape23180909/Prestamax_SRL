@@ -76,6 +76,14 @@ public class PrestamoService
             .ToListAsync();
     }
 
+    public async Task<List<Prestamos>> ObtenerPrestamosPorCliente(int clienteId)
+    {
+        // Busca los préstamos asociados con el clienteId específico
+        await using var contexto = await _dbFactory.CreateDbContextAsync();
+        return await contexto.Prestamos
+            .Where(p => p.ClienteId == clienteId)
+            .ToListAsync();
+    }
     public async Task<List<Prestamos>> ListarPrestamosConClientes()
     {
         await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
