@@ -1,0 +1,152 @@
+﻿@page "/Cobro/Create"
+@inject ClienteService clienteService
+@inject PrestamoService prestamoService
+@inject CobroService cobroService
+@inject NavigationManager navigationManager
+@inject ToastService toastService
+@rendermode InteractiveServer
+
+<PageTitle>Registrar Cobro</PageTitle>
+
+<EditForm Model="cobro" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="container-fluid vh-95 d-flex justify-content-center align-items-center">
+        <div class="card shadow-lg" style="width: 1400px; min-height: 600px; border-radius: 15px;">
+            <!-- Encabezado y botón Buscar Cliente -->
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; background-color: #f1f1f1;">
+                <div style="flex: 1; text-align: center;">
+                    <h3 class="card-title">Registrar Cobro</h3>
+                </div>
+                <button type="button" class="btn btn-primary" style="border-radius: 5px;" @onclick="RedirigirABusquedaCliente">
+                    <span class="bi bi-person-fill-check"></span> Buscar Deudor
+                </button>
+            </div>
+
+            <div class="card-body" style="background-color: #f9f9f9;">
+                <!-- Información del Cliente Seleccionado -->
+                <div class="mb-4">
+                    <h5 class="text-primary">Información del Cliente Seleccionado</h5>
+                    @if (cliente != null)
+                    {
+                        <div class="card mb-3" style="border-radius: 10px; background-color: #e7f0ff;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label><strong>Nombre:</strong></label>
+                                        <span>@cliente.Nombres @cliente.Apellidos</span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label><strong>Cédula:</strong></label>
+                                        <span>@cliente.Cedula</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <strong>Nota:</strong> Selecciona un cliente para asociarlo al cobro.
+                        </div>
+                    }
+                </div>
+
+                <!-- Selección de Préstamo y Detalles del Cobro -->
+                <h5 class="text-primary">Detalles del Cobro</h5>
+
+                <div class="mb-3">
+                    <label for="prestamoId" class="form-label">Préstamo</label>
+                    <select id="prestamoId" class="form-control" @bind="cobro.PrestamoId">
+                        <option value="">Selecciona un préstamo</option>
+                        @foreach (var prestamo in prestamos)
+                        {
+                            <option value="@prestamo.PrestamosId">Préstamo ID: @prestamo.PrestamosId - Monto: @prestamo.MontoTotalPagar</option>
+                        }
+                    </select>
+                    <ValidationMessage For="@(() => cobro.PrestamoId)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="importePagar" class="form-label">Importe a Pagar</label>
+                    <InputNumber id="importePagar" class="form-control" @bind-Value="cobro.ImportePagar" />
+                    <ValidationMessage For="@(() => cobro.ImportePagar)" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="mora" class="form-label">Mora (opcional)</label>
+                    <InputNumber id="mora" class="form-control" @bind-Value="cobro.Mora" />
+                </div>
+            </div>
+
+            <!-- Botones de acciones -->
+            <div class="card-footer text-center" style="background-color: #f1f1f1;">
+                <button type="button" class="btn btn-outline-secondary" @onclick="Nuevo">
+                    <span class="bi bi-plus-circle"></span> Nuevo
+                </button>
+                <button type="submit" class="btn btn-outline-success">
+                    <span class="bi bi-check-circle-fill"></span> Guardar
+                </button>
+                <button type="button" class="btn btn-outline-danger" @onclick="Retroceder">
+                    <span class="bi bi-arrow-bar-left"></span> Retroceder
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private Clientes cliente;
+    public Cobros cobro = new Cobros();
+    private List<Prestamos> prestamos = new List<Prestamos>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+        if (query.TryGetValue("clienteId", out var clienteId))
+        {
+            cliente = await clienteService.Buscar(int.Parse(clienteId));
+            cobro.ClienteId = cliente.ClienteId;
+
+            // Cargar los préstamos asociados al cliente seleccionado
+            prestamos = await prestamoService.ObtenerPrestamosPorCliente(cliente.ClienteId);
+        }
+    }
+
+    private void RedirigirABusquedaCliente()
+    {
+        navigationManager.NavigateTo("/Cobros/SeleccionarCliente");
+    }
+
+    public async Task Nuevo()
+    {
+        cobro = new Cobros();
+        cliente = null;
+    }
+
+    private async Task Retroceder()
+    {
+        navigationManager.NavigateTo("/menu");
+    }
+
+    private async Task Guardar()
+    {
+        if (cliente == null || cobro.PrestamoId == 0)
+        {
+            toastService.Notify(new(ToastType.Warning,
+            iconName: IconName.None,
+            title: "Error",
+            message: "Por favor, selecciona un deudor y un préstamo antes de guardar el cobro."));
+            return;
+        }
+
+        await cobroService.Guardar(cobro);
+
+        toastService.Notify(new(ToastType.Success,
+        iconName: IconName.None,
+        title: "Guardado Exitoso",
+        message: "El cobro se ha guardado correctamente."));
+        await Retroceder();
+    }
+}
