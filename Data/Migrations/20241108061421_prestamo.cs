@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prestamax_SRL.Migrations
 {
     /// <inheritdoc />
-    public partial class prestamoi : Migration
+    public partial class prestamo : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,7 +44,8 @@ namespace Prestamax_SRL.Migrations
                     FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MontoCuota = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     TotalInteres = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    MontoTotalPagar = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
+                    MontoTotalPagar = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Saldo = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,8 +68,8 @@ namespace Prestamax_SRL.Migrations
                     PrestamoId = table.Column<int>(type: "int", nullable: false),
                     Mora = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     ImportePagar = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    ClientesClienteId = table.Column<int>(type: "int", nullable: true),
-                    PrestamosId = table.Column<int>(type: "int", nullable: true)
+                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ClientesClienteId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -89,12 +90,7 @@ namespace Prestamax_SRL.Migrations
                         column: x => x.PrestamoId,
                         principalTable: "Prestamos",
                         principalColumn: "PrestamosId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Cobros_Prestamos_PrestamosId",
-                        column: x => x.PrestamosId,
-                        principalTable: "Prestamos",
-                        principalColumn: "PrestamosId");
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -111,11 +107,6 @@ namespace Prestamax_SRL.Migrations
                 name: "IX_Cobros_PrestamoId",
                 table: "Cobros",
                 column: "PrestamoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Cobros_PrestamosId",
-                table: "Cobros",
-                column: "PrestamosId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Prestamos_ClienteId",

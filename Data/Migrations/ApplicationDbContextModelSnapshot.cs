@@ -271,6 +271,9 @@ namespace Prestamax_SRL.Migrations
                     b.Property<int?>("ClientesClienteId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("FechaInicio")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal?>("ImportePagar")
                         .HasColumnType("decimal(18,2)");
 
@@ -280,9 +283,6 @@ namespace Prestamax_SRL.Migrations
                     b.Property<int>("PrestamoId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PrestamosId")
-                        .HasColumnType("int");
-
                     b.HasKey("CobroId");
 
                     b.HasIndex("ClienteId");
@@ -290,8 +290,6 @@ namespace Prestamax_SRL.Migrations
                     b.HasIndex("ClientesClienteId");
 
                     b.HasIndex("PrestamoId");
-
-                    b.HasIndex("PrestamosId");
 
                     b.ToTable("Cobros");
                 });
@@ -332,6 +330,9 @@ namespace Prestamax_SRL.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("MontoTotalPagar")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Saldo")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("TotalInteres")
@@ -408,14 +409,10 @@ namespace Prestamax_SRL.Migrations
                         .HasForeignKey("ClientesClienteId");
 
                     b.HasOne("Prestamax_SRL.Models.Prestamos", "Prestamo")
-                        .WithMany()
-                        .HasForeignKey("PrestamoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Prestamax_SRL.Models.Prestamos", null)
                         .WithMany("Cobros")
-                        .HasForeignKey("PrestamosId");
+                        .HasForeignKey("PrestamoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Cliente");
 
