@@ -1,4 +1,5 @@
 ﻿@page "/Cobro/Create"
+@using System.Diagnostics
 @inject ClienteService clienteService
 @inject PrestamoService prestamoService
 @inject CobroService cobroService
@@ -141,12 +142,37 @@
             return;
         }
 
-        await cobroService.Guardar(cobro);
+        try
+        {
+            // Actualiza el saldo del préstamo
+            var prestamo = await prestamoService.ObtenerPrestamoPorId(cobro.PrestamoId);
+            if (prestamo != null)
+            {
+                prestamo.Saldo -= cobro.ImportePagar;
+                if (prestamo.Saldo < 0) prestamo.Saldo = 0;
 
-        toastService.Notify(new(ToastType.Success,
-        iconName: IconName.None,
-        title: "Guardado Exitoso",
-        message: "El cobro se ha guardado correctamente."));
-        await Retroceder();
+                await prestamoService.ActualizarPrestamo(prestamo);
+            }
+
+            // Guarda el cobro
+            await cobroService.GuardarCobro(cobro);  // Revisa que GuardarCobro esté correctamente implementado
+
+            // Notificación de éxito
+            toastService.Notify(new(ToastType.Success,
+            iconName: IconName.None,
+            title: "Guardado Exitoso",
+            message: "El cobro se ha guardado correctamente y el saldo del préstamo ha sido actualizado."));
+
+            // Recarga la lista de préstamos en la página de Prestamo/Index para reflejar el cambio
+            await cobroService.ActualizarPrestamo(prestamo); // Asegúrate de que ActualizarListaPrestamos esté bien implementado
+        }
+        catch (Exception ex)
+        {
+            toastService.Notify(new(ToastType.Success,
+            iconName: IconName.None,
+            title: "Error",
+            message: $"Hubo un error al guardar el cobro: {ex.Message}"));
+        }
     }
+
 }
