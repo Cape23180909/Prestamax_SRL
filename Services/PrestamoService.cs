@@ -1,94 +1,176 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Prestamax_SRL.Data;
 using Prestamax_SRL.Models;
+using System.Drawing;
 using System.Linq.Expressions;
 
-namespace Prestamax_SRL.Services;
-public class PrestamoService
+namespace Prestamax_SRL.Services
 {
-    private readonly IDbContextFactory<ApplicationDbContext> _dbFactory; // Cambiado a IDbContextFactory
+    public class PrestamoService
+    {
+        private readonly IDbContextFactory<ApplicationDbContext> _dbFactory;
+        private readonly IHubContext<Hub> _hubContext; // Inyección de IHubContext
 
-    // Constructor que inicializa _dbFactory
-    public PrestamoService(IDbContextFactory<ApplicationDbContext> dbFactory)
-    {
-        _dbFactory = dbFactory ?? throw new ArgumentNullException(nameof(dbFactory)); // Inicializa el campo
-    }
+        // Constructor que inicializa _dbFactory y _hubContext
+        public PrestamoService(IDbContextFactory<ApplicationDbContext> dbFactory, IHubContext<Hub> hubContext)
+        {
+            _dbFactory = dbFactory ?? throw new ArgumentNullException(nameof(dbFactory));
+            _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext)); // Inicializa _hubContext
+        }
 
-    // Metodo Existe 
-    public async Task<bool> Existe(int prestamoid)
-    {
-        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
-        return await contexto.Prestamos.AnyAsync(p => p.PrestamosId == prestamoid);
-    }
+        // Método Existe
+        public async Task<bool> Existe(int prestamoid)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+            return await contexto.Prestamos.AnyAsync(p => p.PrestamosId == prestamoid);
+        }
 
-    // Metodo Insertar
-    private async Task<bool> Insertar(Prestamos prestamo)
-    {
-        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
-        contexto.Prestamos.Add(prestamo);
-        return await contexto.SaveChangesAsync() > 0;
-    }
+        // Método Insertar
+        private async Task<bool> Insertar(Prestamos prestamo)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+            contexto.Prestamos.Add(prestamo);
+            return await contexto.SaveChangesAsync() > 0;
+        }
 
-    // Metodo Modificar 
-    private async Task<bool> Modificar(Prestamos prestamo)
-    {
-        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
-        contexto.Update(prestamo);
-        return await contexto.SaveChangesAsync() > 0;
-    }
+        // Método Modificar
+        private async Task<bool> Modificar(Prestamos prestamo)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+            contexto.Update(prestamo);
+            return await contexto.SaveChangesAsync() > 0;
+        }
 
-    // Metodo Guardar 
-    public async Task<bool> Guardar(Prestamos prestamo)
-    {
-        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
-        if (!await Existe(prestamo.PrestamosId))
-            return await Insertar(prestamo);
-        else
-            return await Modificar(prestamo);
-    }
+        // Método Guardar
+        public async Task<bool> Guardar(Prestamos prestamo)
+        {
+            // Enviar mensaje a todos los clientes conectados utilizando IHubContext
+            await _hubContext.Clients.All.SendAsync("ActualizarPrestamos");
 
-    // Metodo Eliminar
-    public async Task<bool> Eliminar(int id)
-    {
-        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
-        var eliminado = await contexto.Prestamos
-            .Where(p => p.PrestamosId == id)
-            .ExecuteDeleteAsync();
-        return eliminado > 0;
-    }
+            if (!await Existe(prestamo.PrestamosId))
+                return await Insertar(prestamo);
+            else
+                return await Modificar(prestamo);
+        }
 
-    // Metodo Buscar 
-    public async Task<Prestamos?> Buscar(int id)
-    {
-        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
-        return await contexto.Prestamos
-            .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.PrestamosId == id);
-    }
+        public async Task<bool> GuardarCobro(Cobros cobro)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            contexto.Cobros.Add(cobro);
+            return await contexto.SaveChangesAsync() > 0;
+        }
 
-    // Metodo Listar 
-    public async Task<List<Prestamos>> Listar(Expression<Func<Prestamos, bool>> criterio)
-    {
-        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
-        return await contexto.Prestamos
-            .AsNoTracking()
-            .Where(criterio)
-            .ToListAsync();
-    }
+        // Método Eliminar
+        public async Task<bool> Eliminar(int id)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+            var eliminado = await contexto.Prestamos
+                .Where(p => p.PrestamosId == id)
+                .ExecuteDeleteAsync();
+            return eliminado > 0;
+        }
 
-    public async Task<List<Prestamos>> ObtenerPrestamosPorCliente(int clienteId)
-    {
-        // Busca los préstamos asociados con el clienteId específico
-        await using var contexto = await _dbFactory.CreateDbContextAsync();
-        return await contexto.Prestamos
-            .Where(p => p.ClienteId == clienteId)
-            .ToListAsync();
-    }
-    public async Task<List<Prestamos>> ListarPrestamosConClientes()
-    {
-        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
-        return await contexto.Prestamos
-            .Include(p => p.Cliente)
-            .ToListAsync();
+        // Método Buscar
+        public async Task<Prestamos?> Buscar(int id)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+            return await contexto.Prestamos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.PrestamosId == id);
+        }
+
+        // Método Listar
+        public async Task<List<Prestamos>> Listar(Expression<Func<Prestamos, bool>> criterio)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+            return await contexto.Prestamos
+                .AsNoTracking()
+                .Where(criterio)
+                .ToListAsync();
+        }
+
+        // Método ObtenerPrestamosPorCliente
+        public async Task<List<Prestamos>> ObtenerPrestamosPorCliente(int clienteId)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            return await contexto.Prestamos
+                .Where(p => p.ClienteId == clienteId)
+                .ToListAsync();
+        }
+
+        // Método ListarPrestamosConClientes
+        public async Task<List<Prestamos>> ListarPrestamosConClientes()
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+            return await contexto.Prestamos
+                .Include(p => p.Cliente)
+                .ToListAsync();
+        }
+
+        public async Task<Prestamos> ObtenerPrestamoPorId(int prestamoId)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            // Realiza la consulta a la base de datos o sistema de almacenamiento para obtener el préstamo.
+            var prestamo = await contexto.Prestamos
+                .Include(p => p.Cliente) // Incluye el cliente relacionado, si es necesario
+                .FirstOrDefaultAsync(p => p.PrestamosId == prestamoId);
+
+            return prestamo;
+        }
+
+        public async Task<bool> ActualizarPrestamo(Prestamos prestamoActualizado)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            try
+            {
+                // Verifica que el préstamo existe
+                var prestamoExistente = await ObtenerPrestamoPorId(prestamoActualizado.PrestamosId);
+
+                if (prestamoExistente == null)
+                {
+                    return false; // Préstamo no encontrado
+                }
+
+                // Actualiza las propiedades necesarias, por ejemplo, saldo o monto total a pagar
+                prestamoExistente.MontoTotalPagar = prestamoActualizado.MontoTotalPagar;
+                prestamoExistente.Saldo = prestamoActualizado.Saldo;
+
+                // Guarda los cambios en la base de datos
+                await contexto.SaveChangesAsync();
+                return true; // Indica que la actualización fue exitosa
+            }
+            catch (Exception ex)
+            {
+                // Maneja el error y registra o lanza el mensaje si es necesario
+                Console.WriteLine($"Error al actualizar el préstamo: {ex.Message}");
+                return false;
+            }
+        }
+
+        // Método RealizarPago
+        public async Task<bool> RegistrarCobro(int prestamoId, decimal montoPagado)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            var prestamo = await contexto.Prestamos.FindAsync(prestamoId);
+
+            if (prestamo == null)
+            {
+                return false; // Si el préstamo no existe, retorna false
+            }
+
+            // Actualiza el saldo
+            prestamo.Saldo -= montoPagado;
+
+            // Verifica que el saldo no sea negativo
+            if (prestamo.Saldo < 0)
+            {
+                prestamo.Saldo = 0; // Evita saldo negativo
+            }
+
+            await contexto.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
