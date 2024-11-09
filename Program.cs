@@ -1,6 +1,7 @@
 using BlazorBootstrap;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Prestamax_SRL.Components;
 using Prestamax_SRL.Components.Account;
@@ -40,6 +41,8 @@ builder.Services.AddScoped<ClienteService>();
 builder.Services.AddScoped<PrestamoService>();
 builder.Services.AddScoped<CobroService>();
 builder.Services.AddBlazorBootstrap();
+builder.Services.AddSignalR();
+
 
 var app = builder.Build();
 
@@ -71,4 +74,6 @@ app.MapRazorComponents<App>()
 // Asegura que se añadan endpoints adicionales requeridos por Identity.
 app.MapAdditionalIdentityEndpoints();
 
+// Configura SignalR
+app.MapHub<Hub>("/prestamoHub");
 app.Run();
