@@ -29,8 +29,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<Cobros>()
             .HasOne(c => c.Prestamo)
-            .WithMany()
+            .WithMany(p =>p.Cobros)
             .HasForeignKey(c => c.PrestamoId)
-            .OnDelete(DeleteBehavior.Restrict); // Cambia según sea necesario
+            .OnDelete(DeleteBehavior.Cascade); // Cambia según sea necesario
     }
 }
