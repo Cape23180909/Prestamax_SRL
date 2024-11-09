@@ -29,6 +29,7 @@
                         <th>Fecha Prestamo</th>
                         <th>Fecha Pago</th>
                         <th>MontoCuota</th>
+                        <th>Saldo pendiente</th>
                         <th>Total Interes</th>
                         <th>MontoTotalPagar</th>
                         <th>Ver</th>
@@ -49,9 +50,10 @@
                             <td>@prestamo.Fecha?.ToString("dd/MM/yyyy")</td>
                             <td>@prestamo.FechaInicio.ToString("dd/MM/yyyy")</td>
                             <td>@prestamo.MontoCuota</td>
+                            <td>@prestamo.Saldo</td>
                             <td>@prestamo.TotalInteres</td>
                             <td>@prestamo.MontoTotalPagar</td>
-                               <td>
+                            <td>
                                 <a href="/Prestamo/Details/@prestamo.PrestamosId" class="btn btn-sm btn-outline-info">
                                     <span class="bi bi-eye"></span>
                                 </a>
@@ -82,6 +84,12 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await ActualizarListaPrestamos();
+    }
+
+    public async Task ActualizarListaPrestamos()
+    {
         listaPrestamos = await prestamoService.ListarPrestamosConClientes();
+        StateHasChanged();
     }
 }
