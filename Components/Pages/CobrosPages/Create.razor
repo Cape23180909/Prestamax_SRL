@@ -82,7 +82,7 @@
 
             <!-- Botones de acciones -->
             <div class="card-footer text-center" style="background-color: #f1f1f1;">
-                <button type="button" class="btn btn-outline-secondary" @onclick="Nuevo">
+                <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">
                     <span class="bi bi-plus-circle"></span> Nuevo
                 </button>
                 <button type="submit" class="btn btn-outline-success">
@@ -136,43 +136,72 @@
         if (cliente == null || cobro.PrestamoId == 0)
         {
             toastService.Notify(new(ToastType.Warning,
-            iconName: IconName.None,
-            title: "Error",
-            message: "Por favor, selecciona un deudor y un préstamo antes de guardar el cobro."));
+                iconName: IconName.None,
+                title: "Error",
+                message: "Por favor, selecciona un deudor y un préstamo antes de guardar el cobro."));
             return;
         }
 
         try
         {
-            // Actualiza el saldo del préstamo
+            // Obtener el préstamo seleccionado para actualizar su saldo y fecha de pago
             var prestamo = await prestamoService.ObtenerPrestamoPorId(cobro.PrestamoId);
             if (prestamo != null)
             {
+                // Restar el importe pagado al saldo del préstamo
                 prestamo.Saldo -= cobro.ImportePagar;
                 if (prestamo.Saldo < 0) prestamo.Saldo = 0;
 
+                // Verificar y actualizar la fecha de próximo pago en función de la forma de pago
+                if (prestamo.FechaInicio.HasValue)
+                {
+                    switch (prestamo.FormaPago)
+                    {
+                        case "Quincenal":
+                            prestamo.FechaInicio = prestamo.FechaInicio.Value.AddDays(15); // Cada 15 días
+                            break;
+                        case "Semanal":
+                            prestamo.FechaInicio = prestamo.FechaInicio.Value.AddDays(7); // Cada 7 días
+                            break;
+                        default:
+                            throw new InvalidOperationException("Forma de pago no soportada");
+                    }
+                }
+                else
+                {
+                    // Si no hay fecha inicial, se establece la actual
+                    prestamo.FechaInicio = DateTime.Now;
+                }
+
+                // Guardar los cambios en el préstamo actualizado
                 await prestamoService.ActualizarPrestamo(prestamo);
             }
 
-            // Guarda el cobro
-            await cobroService.GuardarCobro(cobro);  // Revisa que GuardarCobro esté correctamente implementado
+            // Guardar el cobro realizado
+            await cobroService.GuardarCobro(cobro);
 
             // Notificación de éxito
             toastService.Notify(new(ToastType.Success,
-            iconName: IconName.None,
-            title: "Guardado Exitoso",
-            message: "El cobro se ha guardado correctamente y el saldo del préstamo ha sido actualizado."));
+                iconName: IconName.None,
+                title: "Guardado Exitoso",
+                message: "El cobro se ha guardado correctamente y el saldo y la fecha de pago del préstamo han sido actualizados."));
 
-            // Recarga la lista de préstamos en la página de Prestamo/Index para reflejar el cambio
-            await cobroService.ActualizarPrestamo(prestamo); // Asegúrate de que ActualizarListaPrestamos esté bien implementado
+            // Actualizar la lista de préstamos en el índice
+            await prestamoService.ActualizarPrestamosDespuesCobro();
+
         }
         catch (Exception ex)
         {
             toastService.Notify(new(ToastType.Success,
-            iconName: IconName.None,
-            title: "Error",
-            message: $"Hubo un error al guardar el cobro: {ex.Message}"));
+                iconName: IconName.None,
+                title: "Error",
+                message: $"Hubo un error al guardar el cobro: {ex.Message}"));
         }
     }
 
+    public async Task ActualizarListaPrestamos()
+    {
+        prestamos = await prestamoService.ListarPrestamosConClientes();
+        StateHasChanged();
+    }
 }
