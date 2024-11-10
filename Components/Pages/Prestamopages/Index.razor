@@ -48,7 +48,7 @@
                             <td>@prestamo.Cuotas</td>
                             <td>@prestamo.FormaPago</td>
                             <td>@prestamo.Fecha?.ToString("dd/MM/yyyy")</td>
-                            <td>@prestamo.FechaInicio.ToString("dd/MM/yyyy")</td>
+                            <td>@prestamo.FechaInicio?.ToString("dd/MM/yyyy")</td>
                             <td>@prestamo.MontoCuota</td>
                             <td>@prestamo.Saldo</td>
                             <td>@prestamo.TotalInteres</td>
@@ -91,5 +91,11 @@
     {
         listaPrestamos = await prestamoService.ListarPrestamosConClientes();
         StateHasChanged();
+    }
+
+    // Método para recibir la actualización desde otro componente
+    public async Task ActualizarPrestamosDespuesCobro()
+    {
+        await ActualizarListaPrestamos();
     }
 }
