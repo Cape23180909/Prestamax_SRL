@@ -33,7 +33,7 @@ namespace Prestamax_SRL.Models
         [Required(ErrorMessage = "La fecha es obligatoria.")]
         [DataType(DataType.Date)]
         public DateTime? Fecha { get; set; }
-        public DateTime FechaInicio { get; set; }
+        public DateTime? FechaInicio { get; set; }
 
         [Range(0, (double)decimal.MaxValue, ErrorMessage = "El monto por cuota debe ser un valor positivo.")]
         public decimal? MontoCuota { get; set; }
