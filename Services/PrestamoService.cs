@@ -19,6 +19,11 @@ namespace Prestamax_SRL.Services
             _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext)); // Inicializa _hubContext
         }
 
+        public async Task ActualizarPrestamosDespuesCobro()
+        {
+            await _hubContext.Clients.All.SendAsync("ActualizarPrestamos");
+        }
+
         // Método Existe
         public async Task<bool> Existe(int prestamoid)
         {
@@ -119,33 +124,15 @@ namespace Prestamax_SRL.Services
             return prestamo;
         }
 
-        public async Task<bool> ActualizarPrestamo(Prestamos prestamoActualizado)
+        public async Task<bool> ActualizarPrestamo(Prestamos prestamo)
         {
             await using var contexto = await _dbFactory.CreateDbContextAsync();
-            try
-            {
-                // Verifica que el préstamo existe
-                var prestamoExistente = await ObtenerPrestamoPorId(prestamoActualizado.PrestamosId);
+            contexto.Prestamos.Update(prestamo);
 
-                if (prestamoExistente == null)
-                {
-                    return false; // Préstamo no encontrado
-                }
+            // Enviar notificación a través del hub si es necesario
+            await _hubContext.Clients.All.SendAsync("ActualizarPrestamos");
 
-                // Actualiza las propiedades necesarias, por ejemplo, saldo o monto total a pagar
-                prestamoExistente.MontoTotalPagar = prestamoActualizado.MontoTotalPagar;
-                prestamoExistente.Saldo = prestamoActualizado.Saldo;
-
-                // Guarda los cambios en la base de datos
-                await contexto.SaveChangesAsync();
-                return true; // Indica que la actualización fue exitosa
-            }
-            catch (Exception ex)
-            {
-                // Maneja el error y registra o lanza el mensaje si es necesario
-                Console.WriteLine($"Error al actualizar el préstamo: {ex.Message}");
-                return false;
-            }
+            return await contexto.SaveChangesAsync() > 0;
         }
 
         // Método RealizarPago
