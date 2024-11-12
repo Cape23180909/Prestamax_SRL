@@ -111,4 +111,12 @@ public class CobroService
             await _contexto.SaveChangesAsync();
         }
     }
+    public async Task<List<Cobros>> ObtenerCobrosPorCliente(int clienteId)
+    {
+        return await _contexto.Cobros
+            .Where(c => c.ClienteId == clienteId)  // Filtrar por el ID del cliente
+            .Include(c => c.Cliente)               // Incluir la información del cliente
+            .Include(c => c.Prestamo)              // Incluir información del préstamo asociado
+            .ToListAsync();                        // Convertir a lista asincrónicamente
+    }
 }
