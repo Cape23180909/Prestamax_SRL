@@ -1,0 +1,137 @@
+﻿@page "/Cliente/Historial/{HistorialId:int}"
+@inject ClienteService clienteService
+@inject PrestamoService prestamoService
+@inject CobroService cobroService
+@inject NavigationManager navigationManager
+
+<PageTitle>Historial de Préstamos</PageTitle>
+
+<div class="container-fluid vh-100 d-flex flex-column justify-content-center">
+    <div class="card shadow-lg w-100 h-100">
+        <div class="card-header d-flex justify-content-between text-black rounded-top">
+            <h3 class="card-title text-center w-100">Historial de Préstamos de:  @cliente?.Nombres @cliente?.Apellidos</h3>
+            <a href="/Cliente/Seleccionar" class="btn btn-outline-primary d-flex align-items-center">
+                <span class="bi bi-arrow-left-circle"></span> Regresar
+            </a>
+        </div>
+
+        <div class="card-body overflow-auto">
+            @if (cliente != null)
+            {
+                <div class="border-bottom pb-3 mb-3">
+                    <h5>Información del Cliente</h5>
+                    <ul class="list-unstyled">
+                        <li><strong>Cédula:</strong> @cliente.Cedula</li>
+                        <li><strong>Dirección:</strong> @cliente.Direccion</li>
+                        <li><strong>Teléfono:</strong> @cliente.Telefono</li>
+                        <li><strong>Ciudad:</strong> @cliente.Ciudad</li>
+                    </ul>
+                </div>
+
+                <h5 class="mb-3">Préstamos y Cobros</h5>
+                @if (listaPrestamos?.Any() == true)
+                {
+                    @foreach (var prestamo in listaPrestamos)
+                    {
+                        <div class="card mb-4 shadow-sm rounded" style="background-color: #f9f9f9;">
+                            <div class="card-header  text-black d-flex justify-content-between rounded-top">
+                                <h6 class="mb-0">Préstamo ID: @prestamo.PrestamosId</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Monto Prestado:</strong> @prestamo.MontoPrestado.ToString("C")</p>
+                                        <p><strong>Interés:</strong> @prestamo.Interes %</p>
+                                        <p><strong>Cuotas:</strong> @prestamo.Cuotas</p>
+                                        <p><strong>Forma de Pago:</strong> @prestamo.FormaPago</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Fecha Préstamo:</strong> @prestamo.Fecha?.ToString("dd/MM/yyyy")</p>
+                                        <p><strong>Fecha pago:</strong> @prestamo.FechaInicio?.ToString("dd/MM/yyyy")</p>
+                                        <p><strong>Saldo Restante:</strong> <span class="text-success fw-bold">@prestamo.Saldo?.ToString("C")</span></p>
+                                        <p><strong>Total Interés:</strong> @prestamo.TotalInteres?.ToString("C")</p>
+                                        <p><strong>Monto Total a Pagar:</strong> @prestamo.MontoTotalPagar?.ToString("C")</p>
+                                    </div>
+                                </div>
+
+                                @if (listaCobros.Any(c => c.PrestamoId == prestamo.PrestamosId))
+                                {
+                                    <div class="card shadow-sm mb-4" style="background-color: #f9f9f9;">
+                                        <div class="card-header text-black">
+                                            <h4 class="mb-0 text-center">Detalles de los Cobros</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table table-bordered table-striped text-center" style="background-color: #f2f2f2;">
+                                                <thead class="table-primary">
+                                                    <tr>
+                                                        <th>Cobro ID</th>
+                                                        <th>Monto Cobrado</th>
+                                                        <th>Fecha Cobro</th>
+                                                        <th>Saldo Restante</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{
+                                                        decimal saldoRestante = prestamo.MontoTotalPagar ?? 0;
+                                                    }
+                                                    @foreach (var cobro in listaCobros.Where(c => c.PrestamoId == prestamo.PrestamosId))
+                                                    {
+                                                        saldoRestante -= cobro.ImportePagar ?? 0;
+                                                        <tr>
+                                                            <td>@cobro.CobroId</td>
+                                                            <td>@cobro.ImportePagar?.ToString("C")</td>
+                                                            <td>@cobro.FechaCobro?.ToString("dd/MM/yyyy")</td>
+                                                            <td><span class="text-black">@saldoRestante.ToString("C")</span></td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-info text-center mt-3" role="alert">
+                                        No se encontraron cobros para este préstamo.
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="alert alert-warning text-center" role="alert">
+                        No se encontraron préstamos para este cliente.
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-danger text-center" role="alert">
+                    No se encontró información para este cliente.
+                </div>
+            }
+        </div>
+
+        <div class="card-footer d-flex justify-content-between bg-light">
+            <p class="mb-0">Total de préstamos: @listaPrestamos?.Count</p>
+            <p class="mb-0">Total de cobros: @listaCobros?.Count</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int HistorialId { get; set; }
+    public Clientes cliente = new Clientes();
+    public List<Prestamos> listaPrestamos = new List<Prestamos>();
+    public List<Cobros> listaCobros = new List<Cobros>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        cliente = await clienteService.ObtenerClientePorId(HistorialId);
+        listaPrestamos = await prestamoService.Listar(p => p.ClienteId == HistorialId);
+        listaCobros = await cobroService.Listar(c => c.Prestamo.ClienteId == HistorialId);
+    }
+}
