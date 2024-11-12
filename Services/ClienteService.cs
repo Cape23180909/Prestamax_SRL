@@ -67,4 +67,14 @@ public class ClienteService
         return await _contexto.Clientes.ToListAsync();
     }
 
+    public async Task<Clientes> ObtenerClientePorId(int clienteId)
+    {
+        return await _contexto.Clientes.FirstOrDefaultAsync(c => c.ClienteId == clienteId);
+    }
+    public async Task<List<Clientes>> ObtenerClientesConPrestamos()
+    {
+        return await _contexto.Clientes
+            .Where(c => c.Prestamos.Any())
+            .ToListAsync();
+    }
 }
