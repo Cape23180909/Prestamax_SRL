@@ -35,7 +35,7 @@
             </div>
 
             <div class="menu-item">
-                <button @onclick="NavigateToHistorialPrestamo" class="menu-button">
+                <button @onclick="() => NavigateToHistorialPrestamo(HistorialId)" class="menu-button">
                     <div class="img-container">
                         <img src="/Historial prestamo.png" alt="Historial Préstamo" />
                     </div>
@@ -114,6 +114,8 @@
 </style>
 
 @code {
+    [Parameter]
+    public int HistorialId { get; set; }
     private void NavigateToClients()
     {
         navigationManager.NavigateTo("/Cliente/Index");
@@ -129,9 +131,9 @@
         navigationManager.NavigateTo("/Cobro/Create");
     }
 
-    private void NavigateToHistorialPrestamo()
+    private void NavigateToHistorialPrestamo(int historialId)
     {
-        navigationManager.NavigateTo("/historial-prestamo");
+        navigationManager.NavigateTo("/Cliente/Seleccionar");
     }
 
     private void NavigateToVisionGeneral()
