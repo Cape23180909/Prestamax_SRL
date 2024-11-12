@@ -24,5 +24,6 @@ namespace Prestamax_SRL.Models
         public decimal? Mora { get; set; }
         public decimal? ImportePagar { get; set; }
         public DateTime FechaInicio { get; set; }
+        public DateTime? FechaCobro { get; set; }
     }
 }
