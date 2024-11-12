@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prestamax_SRL.Migrations
 {
     /// <inheritdoc />
-    public partial class prestamo : Migration
+    public partial class NuevaMigracion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -41,11 +41,11 @@ namespace Prestamax_SRL.Migrations
                     Cuotas = table.Column<int>(type: "int", nullable: false),
                     FormaPago = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: true),
                     MontoCuota = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     TotalInteres = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     MontoTotalPagar = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Saldo = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Saldo = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -69,6 +69,7 @@ namespace Prestamax_SRL.Migrations
                     Mora = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     ImportePagar = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaCobro = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ClientesClienteId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

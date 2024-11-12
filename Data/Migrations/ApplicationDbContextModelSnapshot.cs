@@ -271,6 +271,9 @@ namespace Prestamax_SRL.Migrations
                     b.Property<int?>("ClientesClienteId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("FechaCobro")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("FechaInicio")
                         .HasColumnType("datetime2");
 
@@ -312,7 +315,7 @@ namespace Prestamax_SRL.Migrations
                         .IsRequired()
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("FechaInicio")
+                    b.Property<DateTime?>("FechaInicio")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FormaPago")
@@ -332,7 +335,7 @@ namespace Prestamax_SRL.Migrations
                     b.Property<decimal?>("MontoTotalPagar")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("Saldo")
+                    b.Property<decimal?>("Saldo")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("TotalInteres")
