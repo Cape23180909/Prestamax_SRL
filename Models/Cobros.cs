@@ -22,7 +22,7 @@ namespace Prestamax_SRL.Models
         public Prestamos Prestamo { get; set; }
 
         public decimal? Mora { get; set; }
-        public decimal? ImportePagar { get; set; }
+        public decimal ImportePagar { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime? FechaCobro { get; set; }
     }
