@@ -33,5 +33,6 @@ namespace Prestamax_SRL.Models
         public string Ciudad { get; set; }
 
         public virtual ICollection<Cobros> Cobros { get; set; } // Relación con Cobros
+        public ICollection<Prestamos> Prestamos { get; set; } = new List<Prestamos>();
     }
 }
