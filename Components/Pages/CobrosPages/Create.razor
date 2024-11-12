@@ -69,6 +69,12 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="FechaCobro" class="form-label">Fecha Cobro:</label>
+                    <InputDate id="importePagar" class="form-control" @bind-Value="cobro.FechaCobro" />
+                    <ValidationMessage For="@(() => cobro.ImportePagar)" />
+                </div>
+
+                <div class="mb-3">
                     <label for="importePagar" class="form-label">Importe a Pagar</label>
                     <InputNumber id="importePagar" class="form-control" @bind-Value="cobro.ImportePagar" />
                     <ValidationMessage For="@(() => cobro.ImportePagar)" />
