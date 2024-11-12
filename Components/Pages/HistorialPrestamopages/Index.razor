@@ -43,6 +43,7 @@
                                         <p><strong>Monto Prestado:</strong> @prestamo.MontoPrestado.ToString("C")</p>
                                         <p><strong>Interés:</strong> @prestamo.Interes %</p>
                                         <p><strong>Cuotas:</strong> @prestamo.Cuotas</p>
+                                        <p><strong>MontoCuota:</strong> @prestamo.MontoCuota</p>
                                         <p><strong>Forma de Pago:</strong> @prestamo.FormaPago</p>
                                     </div>
                                     <div class="col-md-6">
@@ -76,10 +77,10 @@
                                                     }
                                                     @foreach (var cobro in listaCobros.Where(c => c.PrestamoId == prestamo.PrestamosId))
                                                     {
-                                                        saldoRestante -= cobro.ImportePagar ?? 0;
+                                                        saldoRestante -= cobro.ImportePagar;
                                                         <tr>
                                                             <td>@cobro.CobroId</td>
-                                                            <td>@cobro.ImportePagar?.ToString("C")</td>
+                                                            <td>@cobro.ImportePagar.ToString("C")</td>
                                                             <td>@cobro.FechaCobro?.ToString("dd/MM/yyyy")</td>
                                                             <td><span class="text-black">@saldoRestante.ToString("C")</span></td>
                                                         </tr>
