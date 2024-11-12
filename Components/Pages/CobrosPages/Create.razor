@@ -136,7 +136,6 @@
     {
         navigationManager.NavigateTo("/menu");
     }
-
     private async Task Guardar()
     {
         if (cliente == null || cobro.PrestamoId == 0)
@@ -157,6 +156,19 @@
                 // Restar el importe pagado al saldo del préstamo
                 prestamo.Saldo -= cobro.ImportePagar;
                 if (prestamo.Saldo < 0) prestamo.Saldo = 0;
+
+                // Si el préstamo tiene cuotas definidas, actualizamos el saldo de la cuota restante
+                if (prestamo.Cuotas.HasValue)
+                {
+                    // Aseguramos que cuotaRestante sea un número entero de cuotas restantes
+                    int cuotaRestante = prestamo.Cuotas.Value - 1; // Restamos una cuota por cada pago realizado
+
+                    // Comprobamos que cuotaRestante no sea negativo
+                    cuotaRestante = cuotaRestante < 0 ? 0 : cuotaRestante;
+
+                    // Asignamos el valor actualizado de cuotas restantes
+                    prestamo.Cuotas = cuotaRestante;
+                }
 
                 // Verificar y actualizar la fecha de próximo pago en función de la forma de pago
                 if (prestamo.FechaInicio.HasValue)
@@ -194,7 +206,6 @@
 
             // Actualizar la lista de préstamos en el índice
             await prestamoService.ActualizarPrestamosDespuesCobro();
-
         }
         catch (Exception ex)
         {
@@ -204,6 +215,7 @@
                 message: $"Hubo un error al guardar el cobro: {ex.Message}"));
         }
     }
+
 
     public async Task ActualizarListaPrestamos()
     {
