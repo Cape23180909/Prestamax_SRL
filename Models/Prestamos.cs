@@ -24,7 +24,7 @@ namespace Prestamax_SRL.Models
         [Range(0.1, 100, ErrorMessage = "El interés debe estar entre 0.1% y 100%.")]
         public decimal Interes { get; set; }
 
-        public int Cuotas { get; set; }
+        public int? Cuotas { get; set; }
 
         [Required(ErrorMessage = "La forma de pago es obligatoria.")]
         [StringLength(50, ErrorMessage = "La forma de pago no puede exceder los 50 caracteres.")]
