@@ -71,31 +71,31 @@
                 <h5 class="text-primary">Detalles del Préstamo</h5>
 
                 <div class="mb-3">
-                    <label for="fecha" class="form-label">Fecha del Préstamo</label>
+                    <label for="fecha" class="form-label"><strong>Fecha Pr&eacute;stamo:</strong></label>
                     <InputDate id="fecha" class="form-control" @bind-Value="prestamo.Fecha" />
                     <ValidationMessage For="@(() => prestamo.Fecha)" />
                 </div>
 
                 <div class="mb-3">
-                    <label for="montoPrestado" class="form-label">Monto Prestado</label>
+                    <label for="montoPrestado" class="form-label"<strong>Monto Pr&eacute;stamo:</strong></label>
                     <InputNumber id="montoPrestado" class="form-control" @bind-Value="prestamo.MontoPrestado" />
                     <ValidationMessage For="@(() => prestamo.MontoPrestado)" />
                 </div>
 
                 <div class="mb-3">
-                    <label for="interes" class="form-label">Interés (%)</label>
+                    <label for="interes" class="form-label"<strong>Interés (%):</strong></label>
                     <InputNumber id="interes" class="form-control" @bind-Value="prestamo.Interes" />
                     <ValidationMessage For="@(() => prestamo.Interes)" />
                 </div>
 
                 <div class="mb-3">
-                    <label for="cuotas" class="form-label">Cuotas</label>
+                    <label for="cuotas" class="form-label"<strong>Cuotas:</strong></label>
                     <InputNumber id="cuotas" class="form-control" @bind-Value="prestamo.Cuotas" />
                     <ValidationMessage For="@(() => prestamo.Cuotas)" />
                 </div>
 
                 <div class="mb-3">
-                    <label for="formaPago" class="form-label">Forma de Pago:</label>
+                    <label for="formaPago" class="form-label"<strong>Forma de Pago:</strong></label>
                     <select id="formaPago" class="form-control" @bind="prestamo.FormaPago">
                         <option value="">Selecciona una opción</option>
                         <option value="Semanal">Semanal</option>
@@ -105,27 +105,27 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="fecha" class="form-label">Fecha Pago:</label>
+                    <label for="fecha" class="form-label"<strong>Fecha Pago:</strong></label>
                     <InputDate id="fecha" class="form-control" @bind-Value="prestamo.FechaInicio" readonly />
                     <ValidationMessage For="@(() => prestamo.FechaInicio)" />
                 </div>
 
                 <!-- Campos calculados -->
                 <div class="mb-3">
-                    <label for="montoCuota" class="form-label">Monto por Cuota</label>
+                    <label for="montoCuota" class="form-label"<strong>Monto por Cuota:</strong></label>
                     <InputNumber id="montoCuota" class="form-control" @bind-Value="prestamo.MontoCuota" disabled />
                 </div>
                 <div class="mb-3">
-                    <label for="totalInteres" class="form-label">Total Interés</label>
+                    <label for="totalInteres" class="form-label"<strong>Total Inter&eacute;s:</strong></label>
                     <InputNumber id="totalInteres" class="form-control" @bind-Value="prestamo.TotalInteres" disabled />
                 </div>
                 <div class="mb-3">
-                    <label for="montoTotalPagar" class="form-label">Monto Total a Pagar</label>
+                    <label for="montoTotalPagar" class="form-label"<strong>Monto Total a Pagar:</strong></label>
                     <InputNumber id="montoTotalPagar" class="form-control" @bind-Value="prestamo.MontoTotalPagar" disabled />
                 </div>
 
-                <button type="button" class="btn btn-outline-secondary" @onclick="CalcularMontos">
-                    <span class="bi bi-calculator"></span> Generar Préstamo
+                <button type="button" class="btn btn-outline-success" @onclick="CalcularMontos">
+                    <span class="bi bi-calculator"></span> Generar Pr&eacute;stamo
                 </button>
             </div>
 
