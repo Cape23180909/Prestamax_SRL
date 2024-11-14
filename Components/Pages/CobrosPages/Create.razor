@@ -58,7 +58,7 @@
 
                 <div class="mb-3">
                     <div class="row">
-                        <label for="prestamoId" class="form-label">Préstamo</label>
+                        <label for="prestamoId" class="form-label"<strong>Pr&eacute;stamo:</strong></label>
                         <InputSelect id="prestamoId" class="form-control" @bind-Value="cobro.PrestamoId">
                             <option value="">Selecciona un préstamo</option>
                             @foreach (var prestamo in prestamos)
@@ -71,19 +71,19 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="FechaCobro" class="form-label">Fecha Cobro:</label>
+                    <label for="FechaCobro" class="form-label"<strong>Fecha Cobro:</strong></label>
                     <InputDate id="importePagar" class="form-control" @bind-Value="cobro.FechaCobro" />
                     <ValidationMessage For="@(() => cobro.ImportePagar)" />
                 </div>
 
                 <div class="mb-3">
-                    <label for="importePagar" class="form-label">Importe a Pagar</label>
+                    <label for="importePagar" class="form-label"<strong>Importe a Pagar:</strong></label>
                     <InputNumber id="importePagar" class="form-control" @bind-Value="cobro.ImportePagar" />
                     <ValidationMessage For="@(() => cobro.ImportePagar)" />
                 </div>
 
                 <div class="mb-3">
-                    <label for="mora" class="form-label">Mora (opcional)</label>
+                    <label for="mora" class="form-label"<strong>Mora(opcional):</strong></label>
                     <InputNumber id="mora" class="form-control" @bind-Value="cobro.Mora" />
                 </div>
             </div>

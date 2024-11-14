@@ -1,5 +1,6 @@
 ﻿@page "/Cobros/SeleccionarCliente"
 @inject ClienteService clienteService
+@inject PrestamoService prestamoService
 @inject NavigationManager navigationManager
 
 <PageTitle>Consulta de clientes para cobros</PageTitle>
@@ -74,12 +75,25 @@
 
 @code {
     private List<Clientes> listarclientes = new List<Clientes>();
+    private List<Prestamos> listarprestamos = new List<Prestamos>();
     public string filtro = "0";
     public string valorFiltro = "";
 
     protected override async Task OnInitializedAsync()
     {
         listarclientes = await clienteService.ObtenerTodos();
+        listarprestamos = await prestamoService.ListarPrestamosConClientes();
+
+        foreach (var cliente in listarclientes)
+        {
+            var prestamosDelCliente = listarprestamos.Where(p => p.ClienteId == cliente.ClienteId).ToList();
+
+            cliente.Saldo = prestamosDelCliente.Sum(p => p.Saldo ?? 0); // Usamos `?? 0` por si hay un saldo nulo
+        }
+        // Filtrar los clientes que tienen saldo pendiente
+        var clientesConSaldo = listarclientes.Where(cliente => cliente.Saldo > 0).ToList();
+        // Asignar la lista filtrada a la lista de clientes
+        listarclientes = clientesConSaldo;
     }
 
     private void SeleccionarCliente(int clienteId)
