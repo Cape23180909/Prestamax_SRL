@@ -67,9 +67,9 @@ public class ClienteService
         return await _contexto.Clientes.ToListAsync();
     }
 
-    public async Task<Clientes> ObtenerClientePorId(int clienteId)
+    public async Task<Clientes> ObtenerClientePorId(int id)
     {
-        return await _contexto.Clientes.FirstOrDefaultAsync(c => c.ClienteId == clienteId);
+        return await _contexto.Clientes.FirstOrDefaultAsync(c => c.ClienteId == id);
     }
     public async Task<List<Clientes>> ObtenerClientesConPrestamos()
     {
