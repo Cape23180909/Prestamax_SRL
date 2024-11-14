@@ -17,10 +17,10 @@
         </div>
 
         <div class="card-body overflow-auto">
-            <!-- Filtro de búsqueda -->
+            @* Filtro de búsqueda  *@
             <div class="row mb-4 align-items-end">
                 <div class="col-md-4">
-                    <label for="Filtro" class="form-label">Filtrar por:</label>
+                    <label for="Filtro" class="form-label"<strong>Filtrar por:</strong></label>
                     <select @bind="filtro" class="form-select">
                         <option value="0">Seleccione una opción</option>
                         <option value="Cliente">Cliente</option>
@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label for="ValorFiltro" class="form-label">Búsqueda:</label>
+                    <label for="ValorFiltro" class="form-label"<strong>Búsqueda:</strong></label>
                     <div class="input-group">
                         <input @bind="valorFiltro" class="form-control" placeholder="Buscar" />
                         <button @onclick="Buscar" class="btn btn-outline-primary" type="button">
