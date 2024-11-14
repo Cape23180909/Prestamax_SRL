@@ -12,8 +12,8 @@ using Prestamax_SRL.Data;
 namespace Prestamax_SRL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241112211659_NuevaMigracion")]
-    partial class NuevaMigracion
+    [Migration("20241114024702_Prestamo")]
+    partial class Prestamo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

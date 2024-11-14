@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prestamax_SRL.Migrations
 {
     /// <inheritdoc />
-    public partial class NuevaMigracion : Migration
+    public partial class Prestamo : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
