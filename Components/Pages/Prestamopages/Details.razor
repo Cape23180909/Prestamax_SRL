@@ -8,7 +8,7 @@
 
 <div class="container-fluid vh-95 d-flex justify-content-center align-items-center">
     <div class="card shadow-lg" style="width: 1400px; min-height: 600px; border-radius: 15px;">
-        <!-- Encabezado -->
+      @*    Encabezado  *@
         <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; background-color: #f1f1f1;">
             <div style="flex: 1; text-align: center;">
                 <h3 class="card-title">Detalle del Préstamo</h3>
@@ -16,9 +16,9 @@
         </div>
 
         <div class="card-body" style="background-color: #f9f9f9;">
-            <!-- Información del Cliente Seleccionado -->
+           @*   Información del Cliente Seleccionado  *@
             <div class="mb-4">
-                <h5 class="text-primary">Información del Cliente</h5>
+                <h5 class="text-primary">Información del Cliente:</h5>
                 @if (cliente != null)
                 {
                     <div class="card mb-3" style="border-radius: 10px; background-color: #e7f0ff;">
@@ -60,8 +60,8 @@
                 }
             </div>
 
-            <!-- Detalles del Préstamo -->
-            <h5 class="text-primary">Detalles del Préstamo</h5>
+         @*  detalles del préstamo  *@
+            <h5 class="text-primary">Detalles del Préstamo:</h5>
 
             <div class="mb-3">
                 <label class="form-label"><strong>Fecha del Préstamo:</strong></label>
