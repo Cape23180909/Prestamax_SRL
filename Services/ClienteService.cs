@@ -85,4 +85,15 @@ public class ClienteService
                              .ToListAsync();
     }
 
+    public async Task <bool> ExisteCedula(string cedula)
+    {
+        return await _contexto.Clientes.AnyAsync(c => c.Cedula == cedula);
+    }
+
+    public async Task<bool> ExisteTelefono(string telefono)
+    {
+        return await _contexto.Clientes.AnyAsync(c => c.Telefono == telefono);
+    }
+
+
 }
