@@ -10,63 +10,76 @@
         <div class="card-header d-flex justify-content-between text-black rounded-top">
             <h3 class="card-title text-center w-100">Visi&oacute;n General</h3>
         </div>
-                <!-- Filtro de Préstamos -->
-                <div class="mb-4">
-                    <label for="filtroEstado" class="form-label">Filtrar por:</label>
-                    <select id="filtroEstado" @bind="filtroEstado" class="form-select" style="width: 500px">
-                        <option value="">Todos</option>
-                        <option value="Activo">Activo</option>
-                        <option value="Finalizado">Finalizado</option>
-                        <option value="Mora">En Mora</option>
-                    </select>
-                </div>
-
-                <!-- Tabla de Préstamos -->
-                <h5 class="mb-3">Préstamos</h5>
-                @if (listaPrestamosFiltrados?.Any() == true)
-                {
-                    <table class="table table-bordered table-striped text-center" style="background-color: ">
-                        <thead class="table-primary">
-                            <tr>
-                                <th>Préstamo ID</th>
-                                <th>Estado</th>
-                                <th>Fecha Préstamo</th>
-                                <th>Forma de Pago</th>
-                                <th>Fecha Inicio</th>
-                                <th>Monto Prestado</th>
-                                <th>Saldo Pendiente</th>
-                                <th>Total a Pagar</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var prestamo in listaPrestamosFiltrados)
-                            {
-                                 <tr style="@GetRowStyle(prestamo)">
-                                    <td>@prestamo.PrestamosId</td>
-                                    <td>@prestamo.Estado</td>
-                                    <td>@(prestamo.Fecha?.ToString("dd/MM/yyyy") ?? "N/A")</td>
-                                    <td>@prestamo.FormaPago</td>
-                                    <td>@(prestamo.FechaInicio?.ToString("dd/MM/yyyy") ?? "N/A")</td>
-                                    <td>@prestamo.MontoPrestado.ToString("C")</td>
-                                    <td>@(prestamo.Saldo?.ToString("C") ?? "N/A")</td>
-                                    <td>@(prestamo.MontoTotalPagar?.ToString("C") ?? "N/A")</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                }
-                else
-                {
-                    <div class="alert alert-warning text-center" role="alert">
-                        No se encontraron préstamos para este cliente con los filtros aplicados.
-                    </div>
-                }
+        @* Filtro de Préstamos *@
+        <div class="mb-4">
+            <label for="filtroEstado" class="form-label"<strong>Filtrar por:</strong></label>
+            <select id="filtroEstado" @bind="filtroEstado" class="form-select" style="width: 500px">
+                <option value="">Todos</option>
+                <option value="Activo">Activo</option>
+                <option value="Finalizado">Finalizado</option>
+                <option value="Mora">En Mora</option>
+            </select>
         </div>
 
-        <div class="card-footer d-flex justify-content-between bg-light">
-            <p class="mb-0">Total de préstamos: @listaPrestamosFiltrados?.Count</p>
-        </div>
+        @* Tabla de Préstamos *@
+        @if (listaPrestamosFiltrados?.Any() == true)
+        {
+            <table class="table table-bordered table-striped text-center" style="background-color: ">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Préstamo ID</th>
+                        <th>Cedula</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Estado</th>
+                        <th>Fecha Préstamo</th>
+                        <th>Forma de Pago</th>
+                        <th>Fecha Pago</th>
+                        <th>Monto Prestado</th>
+                        <th>Interes</th>
+                        <th>Cuotas</th>
+                        <th>Monto Cuota</th>
+                        <th>Total Interes</th>
+                        <th>Saldo Pendiente</th>
+                        <th>Total a Pagar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var prestamo in listaPrestamosFiltrados)
+                    {
+                        <tr style="@GetRowStyle(prestamo)">
+                            <td>@prestamo.PrestamosId</td>
+                            <td>@prestamo.Cliente.Cedula</td>
+                            <td>@prestamo.Cliente.Nombres</td>
+                            <td>@prestamo.Cliente.Apellidos</td>
+                            <td>@prestamo.Estado</td>
+                            <td>@(prestamo.Fecha?.ToString("dd/MM/yyyy") ?? "N/A")</td>
+                            <td>@prestamo.FormaPago</td>
+                            <td>@(prestamo.FechaInicio?.ToString("dd/MM/yyyy") ?? "N/A")</td>
+                            <td>@prestamo.MontoPrestado.ToString("C")</td>
+                            <td>@prestamo.Interes</td>
+                            <td>@prestamo.Cuotas</td>
+                            <td>@prestamo.MontoCuota</td>
+                            <td>@prestamo.TotalInteres</td>
+                            <td>@(prestamo.Saldo?.ToString("C") ?? "N/A")</td>
+                            <td>@(prestamo.MontoTotalPagar?.ToString("C") ?? "N/A")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-warning text-center" role="alert">
+                No se encontraron préstamos para este cliente con los filtros aplicados.
+            </div>
+        }
     </div>
+
+    <div class="card-footer d-flex justify-content-between bg-light">
+        <p class="mb-0">Total de préstamos: @listaPrestamosFiltrados?.Count</p>
+    </div>
+</div>
 
 
 @code {
@@ -107,5 +120,4 @@
             _ => ""
         };
     }
-
 }
