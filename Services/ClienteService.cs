@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Prestamax_SRL.Data;
+using Prestamax_SRL.Migrations;
 using Prestamax_SRL.Models;
 using System.Linq.Expressions;
 
@@ -77,4 +78,11 @@ public class ClienteService
             .Where(c => c.Prestamos.Any())
             .ToListAsync();
     }
+    public async Task<List<Prestamos>> ObtenerPrestamosPorCliente(int clienteId)
+    {
+        return await _contexto.Prestamos
+                             .Where(p => p.ClienteId == clienteId)
+                             .ToListAsync();
+    }
+
 }
