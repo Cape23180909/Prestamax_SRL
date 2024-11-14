@@ -57,15 +57,17 @@
                 <h5 class="text-primary">Detalles del Cobro</h5>
 
                 <div class="mb-3">
-                    <label for="prestamoId" class="form-label">Préstamo</label>
-                    <select id="prestamoId" class="form-control" @bind="cobro.PrestamoId">
-                        <option value="">Selecciona un préstamo</option>
-                        @foreach (var prestamo in prestamos)
-                        {
-                            <option value="@prestamo.PrestamosId">Préstamo ID: @prestamo.PrestamosId - Monto: @prestamo.MontoTotalPagar</option>
-                        }
-                    </select>
-                    <ValidationMessage For="@(() => cobro.PrestamoId)" />
+                    <div class="row">
+                        <label for="prestamoId" class="form-label">Préstamo</label>
+                        <InputSelect id="prestamoId" class="form-control" @bind-Value="cobro.PrestamoId">
+                            <option value="">Selecciona un préstamo</option>
+                            @foreach (var prestamo in prestamos)
+                            {
+                                <option value="@prestamo.PrestamosId">Préstamo ID: @prestamo.PrestamosId - Monto: @prestamo.Saldo</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => cobro.PrestamoId)" />
+                    </div>
                 </div>
 
                 <div class="mb-3">
