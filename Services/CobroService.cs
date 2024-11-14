@@ -119,4 +119,10 @@ public class CobroService
             .Include(c => c.Prestamo)              // Incluir información del préstamo asociado
             .ToListAsync();                        // Convertir a lista asincrónicamente
     }
+
+    public List<Cobros> ListarConFiltro(Expression<Func<Cobros, bool>> filtro)
+    {
+        return _contexto.Cobros.Where(filtro).ToList();
+    }
+
 }
