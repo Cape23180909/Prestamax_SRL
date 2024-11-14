@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Prestamax_SRL.Models
 {
@@ -31,6 +32,9 @@ namespace Prestamax_SRL.Models
         [Required(ErrorMessage = "Favor colocar la ciudad.")]
         [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$", ErrorMessage = "La ciudad solo puede contener letras.")]
         public string Ciudad { get; set; }
+
+        [NotMapped]  // Para que no sea mapeada directamente a la base de datos
+        public decimal Saldo { get; set; }
 
         public virtual ICollection<Cobros> Cobros { get; set; } // Relación con Cobros
         public ICollection<Prestamos> Prestamos { get; set; } = new List<Prestamos>();
