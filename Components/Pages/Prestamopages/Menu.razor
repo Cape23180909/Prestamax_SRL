@@ -54,11 +54,21 @@
         </div>
     </div>
 </div>
-
 <style>
+    .menu-item {
+        flex: 1;
+        min-width: 220px; /* Ajusta el ancho mínimo */
+        max-width: 220px; /* Ajusta el ancho máximo */
+        height: 180px; /* Ajusta la altura */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .menu-button {
         width: 100%;
-        padding: 25px;
+        height: 100%;
+        padding: 20px;
         background-color: #0C3E9F;
         color: white;
         border: none;
@@ -105,13 +115,8 @@
         color: #f0f4fa;
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     }
-
-    .menu-item {
-        flex: 1;
-        min-width: 200px;
-        max-width: 220px;
-    }
 </style>
+
 
 @code {
     [Parameter]
