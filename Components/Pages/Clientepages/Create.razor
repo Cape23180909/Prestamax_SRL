@@ -89,9 +89,35 @@
 
     public async Task<bool> Validar()
     {
-        existe = await clienteService.Existe(cliente.ClienteId);
-        return !existe;
+        // Validar si existe otro cliente con el mismo ClienteId, cédula o teléfono
+        var existeId = await clienteService.Existe(cliente.ClienteId);
+        var existeCedula = await clienteService.ExisteCedula(cliente.Cedula);
+        var existeTelefono = await clienteService.ExisteTelefono(cliente.Telefono);
+
+        if (existeId)
+        {
+            toastService.Notify(new(ToastType.Success, iconName: IconName.None,
+            title: "Error", helpText: "", message: "Ya existe un cliente con este Id."));
+            return false;
+        }
+
+        if (existeCedula)
+        {
+            toastService.Notify(new(ToastType.Success, iconName: IconName.None,
+            title: "Error", helpText: "", message: "Ya existe un cliente con esta cédula."));
+            return false;
+        }
+
+        if (existeTelefono)
+        {
+            toastService.Notify(new(ToastType.Success, iconName: IconName.None,
+            title: "Error", helpText: "", message: "Ya existe un cliente con este número de teléfono."));
+            return false;
+        }
+
+        return true; // Si ninguna validación falló, entonces el cliente es válido
     }
+
 
     public async Task Buscar()
     {
