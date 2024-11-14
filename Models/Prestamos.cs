@@ -44,6 +44,7 @@ namespace Prestamax_SRL.Models
         [Range(0, (double)decimal.MaxValue, ErrorMessage = "El monto total a pagar debe ser un valor positivo.")]
         public decimal? MontoTotalPagar { get; set; }
         public decimal? Saldo { get; set; }
+        public string Estado { get; set; } 
 
         public virtual ICollection<Cobros> Cobros { get; set; } // Relación con Cobros
     }
