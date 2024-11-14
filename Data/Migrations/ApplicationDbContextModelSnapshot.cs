@@ -277,7 +277,7 @@ namespace Prestamax_SRL.Migrations
                     b.Property<DateTime>("FechaInicio")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal?>("ImportePagar")
+                    b.Property<decimal>("ImportePagar")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("Mora")
@@ -308,8 +308,12 @@ namespace Prestamax_SRL.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Cuotas")
+                    b.Property<int?>("Cuotas")
                         .HasColumnType("int");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Fecha")
                         .IsRequired()
@@ -425,7 +429,7 @@ namespace Prestamax_SRL.Migrations
             modelBuilder.Entity("Prestamax_SRL.Models.Prestamos", b =>
                 {
                     b.HasOne("Prestamax_SRL.Models.Clientes", "Cliente")
-                        .WithMany()
+                        .WithMany("Prestamos")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -436,6 +440,8 @@ namespace Prestamax_SRL.Migrations
             modelBuilder.Entity("Prestamax_SRL.Models.Clientes", b =>
                 {
                     b.Navigation("Cobros");
+
+                    b.Navigation("Prestamos");
                 });
 
             modelBuilder.Entity("Prestamax_SRL.Models.Prestamos", b =>

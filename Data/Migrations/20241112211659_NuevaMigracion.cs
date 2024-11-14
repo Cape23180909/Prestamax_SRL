@@ -38,14 +38,15 @@ namespace Prestamax_SRL.Migrations
                     ClienteId = table.Column<int>(type: "int", nullable: false),
                     MontoPrestado = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Interes = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Cuotas = table.Column<int>(type: "int", nullable: false),
+                    Cuotas = table.Column<int>(type: "int", nullable: true),
                     FormaPago = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: true),
                     MontoCuota = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     TotalInteres = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     MontoTotalPagar = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Saldo = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
+                    Saldo = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,7 +68,7 @@ namespace Prestamax_SRL.Migrations
                     ClienteId = table.Column<int>(type: "int", nullable: false),
                     PrestamoId = table.Column<int>(type: "int", nullable: false),
                     Mora = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    ImportePagar = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    ImportePagar = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FechaCobro = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ClientesClienteId = table.Column<int>(type: "int", nullable: true)
