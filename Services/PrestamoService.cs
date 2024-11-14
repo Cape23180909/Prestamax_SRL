@@ -35,6 +35,7 @@ namespace Prestamax_SRL.Services
         private async Task<bool> Insertar(Prestamos prestamo)
         {
             await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+            prestamo.Estado ??= "Activo";
             contexto.Prestamos.Add(prestamo);
             return await contexto.SaveChangesAsync() > 0;
         }
@@ -157,6 +158,17 @@ namespace Prestamax_SRL.Services
 
             await contexto.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<List<Prestamos>> ObtenerPrestamosPorClienteId(int clienteId)
+        {
+            await using var contexto = await _dbFactory.CreateDbContextAsync();
+            // Buscar los préstamos del cliente con el ID proporcionado
+            var prestamos = await contexto.Prestamos
+                .Where(p => p.ClienteId == clienteId) // Filtra por el clienteId
+                .ToListAsync(); // Obtiene la lista de préstamos
+
+            return prestamos;
         }
 
     }
