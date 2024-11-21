@@ -3,6 +3,7 @@
 @inject NavigationManager navigationManager
 
 <PageTitle>Consulta de clientes</PageTitle>
+
 <div class="container-fluid vh-100 d-flex flex-column justify-content-center">
     <div class="card shadow-lg w-100 h-100">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -82,7 +83,7 @@
         listarclientes = await clienteService.ObtenerTodos();
     }
 
-    private void SeleccionarCliente(int clienteId)
+    private async Task SeleccionarCliente(int clienteId)
     {
         navigationManager.NavigateTo($"/Prestamo/Create?clienteId={clienteId}");
     }

@@ -2,11 +2,10 @@
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
-<div style="background: linear-gradient(135deg, #1A2E5B, #0C3E9F); width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;">
-    <div style="background-color: #f7f9fc; width: 85%; height: 90vh; padding: 40px; border-radius: 20px; box-shadow: 0px 20px 40px rgba(0,0,0,0.2); text-align: center; position: relative; overflow: hidden;">
-        <h1 style="color: #0C3E9F; margin-bottom: 50px; font-size: 48px; font-weight: 700; text-shadow: 1px 1px 4px rgba(0,0,0,0.1);">Menú Principal</h1>
-
-        <div class="menu-items" style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 30px;">
+<div class="menu-container">
+    <div class="menu-box">
+        <h1 class="menu-title">Menú Principal</h1>
+        <div class="menu-items">
             <div class="menu-item">
                 <button @onclick="NavigateToClients" class="menu-button">
                     <div class="img-container">
@@ -54,94 +53,31 @@
         </div>
     </div>
 </div>
-<style>
-    .menu-item {
-        flex: 1;
-        min-width: 220px; /* Ajusta el ancho mínimo */
-        max-width: 220px; /* Ajusta el ancho máximo */
-        height: 180px; /* Ajusta la altura */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .menu-button {
-        width: 100%;
-        height: 100%;
-        padding: 20px;
-        background-color: #0C3E9F;
-        color: white;
-        border: none;
-        border-radius: 15px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
-        transition: transform 0.3s ease, background-color 0.3s ease;
-        cursor: pointer;
-    }
-
-        .menu-button:hover {
-            transform: scale(1.05);
-            background-color: #1453B4;
-        }
-
-    .img-container {
-        width: 80px;
-        height: 80px;
-        overflow: hidden;
-        margin-bottom: 15px;
-        border-radius: 50%;
-        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-        .img-container img {
-            width: 100%;
-            height: 100%;
-            transition: transform 0.4s ease;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
-            .img-container img:hover {
-                transform: scale(1.15);
-            }
-
-    .menu-button span {
-        font-size: 18px;
-        font-weight: bold;
-        margin-top: 10px;
-        text-transform: uppercase;
-        color: #f0f4fa;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-    }
-</style>
-
 
 @code {
     [Parameter]
     public int VisionId { get; set; }
-    private void NavigateToClients()
+    private async Task NavigateToClients()
     {
         navigationManager.NavigateTo("/Cliente/Index");
     }
 
-    private void NavigateToRegistrarPrestamo()
+    private async Task NavigateToRegistrarPrestamo()
     {
         navigationManager.NavigateTo("/Prestamo/Index");
     }
 
-    private void NavigateToRegistrarCobro()
+    private async Task NavigateToRegistrarCobro()
     {
         navigationManager.NavigateTo("/Cobro/Create");
     }
 
-    private void NavigateToHistorialPrestamo(int historialId)
+    private async Task NavigateToHistorialPrestamo(int historialId)
     {
         navigationManager.NavigateTo("/Cliente/Seleccionar");
     }
 
-    private void NavigateToVisionGeneral()
+    private async Task NavigateToVisionGeneral()
     {
         navigationManager.NavigateTo("/VisionGeneral/Index");
     }

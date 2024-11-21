@@ -8,7 +8,7 @@
 
 <div class="container-fluid vh-95 d-flex justify-content-center align-items-center">
     <div class="card shadow-lg" style="width: 1400px; min-height: 600px; border-radius: 15px;">
-      @*    Encabezado  *@
+        @*    Encabezado  *@
         <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; background-color: #f1f1f1;">
             <div style="flex: 1; text-align: center;">
                 <h3 class="card-title">Detalle del Préstamo</h3>
@@ -16,7 +16,7 @@
         </div>
 
         <div class="card-body" style="background-color: #f9f9f9;">
-           @*   Información del Cliente Seleccionado  *@
+            @*   Información del Cliente Seleccionado  *@
             <div class="mb-4">
                 <h5 class="text-primary">Información del Cliente:</h5>
                 @if (cliente != null)
@@ -60,7 +60,7 @@
                 }
             </div>
 
-         @*  detalles del préstamo  *@
+            @*  detalles del préstamo  *@
             <h5 class="text-primary">Detalles del Préstamo:</h5>
 
             <div class="mb-3">
@@ -93,7 +93,7 @@
                 <span>@prestamo.FormaPago</span>
             </div>
 
-            <!-- Campos calculados -->
+            @* Campos calculados *@
             <div class="mb-3">
                 <label class="form-label"><strong>Monto por Cuota:</strong></label>
                 <span>@prestamo.MontoCuota?.ToString("C")</span>
@@ -108,7 +108,7 @@
             </div>
         </div>
 
-        <!-- Footer con el botón Retroceder -->
+        @* Footer con el botón Retroceder *@
         <div class="card-footer text-center" style="background-color: #f1f1f1;">
             <button type="button" class="btn btn-outline-primary" @onclick="Retroceder">
                 <span class="bi bi-arrow-bar-left"></span> Retroceder
@@ -118,15 +118,13 @@
 </div>
 
 @code {
+    [Parameter]
+    public int prestamoId { get; set; }
     private Clientes cliente;
     public Prestamos prestamo = new Prestamos();
 
-    [Parameter]
-    public int prestamoId { get; set; }
-
     protected override async Task OnInitializedAsync()
     {
-        // Cargar el préstamo a mostrar
         prestamo = await prestamoService.Buscar(prestamoId);
 
         if (prestamo.ClienteId != 0) // Si hay un cliente asociado

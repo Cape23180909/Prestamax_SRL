@@ -12,7 +12,7 @@
 
     <div class="container-fluid vh-95 d-flex justify-content-center align-items-center">
         <div class="card shadow-lg" style="width: 1400px; min-height: 600px; border-radius: 15px;">
-            <!-- Encabezado y botón Buscar Cliente -->
+            @* Encabezado y botón Buscar Cliente *@
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; background-color: #f1f1f1;">
                 <div style="flex: 1; text-align: center;">
                     <h3 class="card-title">Editar Préstamo</h3>
@@ -23,7 +23,7 @@
             </div>
 
             <div class="card-body" style="background-color: #f9f9f9;">
-                <!-- Información del Cliente Seleccionado -->
+                @* Información del Cliente Seleccionado *@
                 <div class="mb-4">
                     <h5 class="text-primary">Información del Cliente Seleccionado</h5>
                     @if (cliente != null)
@@ -67,7 +67,7 @@
                     }
                 </div>
 
-                <!-- Detalles del Préstamo -->
+                @* Detalles del Préstamo *@
                 <h5 class="text-primary">Detalles del Préstamo</h5>
 
                 <div class="mb-3">
@@ -110,7 +110,7 @@
                     <ValidationMessage For="@(() => prestamo.FechaInicio)" />
                 </div>
 
-                <!-- Campos calculados -->
+                @* Campos calculados *@
                 <div class="mb-3">
                     <label for="montoCuota" class="form-label"<strong>Monto por Cuota:</strong></label>
                     <InputNumber id="montoCuota" class="form-control" @bind-Value="prestamo.MontoCuota" disabled />
@@ -129,7 +129,7 @@
                 </button>
             </div>
 
-            <!-- Botones de acciones -->
+            @* Botones de acciones *@
             <div class="card-footer text-center" style="background-color: #f1f1f1;">
                 <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">
                     <span class="bi bi-plus-circle"></span> Nuevo
@@ -146,15 +146,13 @@
 </EditForm>
 
 @code {
+    [Parameter]
+    public int prestamoId { get; set; }
     private Clientes cliente;
     public Prestamos prestamo = new Prestamos();
 
-    [Parameter]
-    public int prestamoId { get; set; }
-
     protected override async Task OnInitializedAsync()
     {
-        // Cargar el préstamo a editar
         prestamo = await prestamoService.Buscar(prestamoId);
 
         if (prestamo.ClienteId != 0) // Si hay un cliente asociado
@@ -163,7 +161,7 @@
         }
     }
 
-    private void RedirigirABusquedaCliente()
+    private async Task RedirigirABusquedaCliente()
     {
         navigationManager.NavigateTo("/Clientes/SeleccionarCliente");
     }
@@ -195,7 +193,7 @@
         }
     }
 
-    private void CalcularMontos()
+    private async Task CalcularMontos()
     {
         // Calcular el total de interés y monto total a pagar
         prestamo.TotalInteres = prestamo.MontoPrestado * prestamo.Interes / 100;
