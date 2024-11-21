@@ -1,0 +1,79 @@
+﻿.login-container {
+    background: linear-gradient(to right, #1A2E5B, #0C3E9F);
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    background-color: #1A2E5B;
+    width: 90%;
+    max-width: 400px;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+    .login-box h2 {
+        color: white;
+        margin-bottom: 30px;
+        font-weight: bold;
+    }
+
+.login-icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+    .form-group label {
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-submit {
+    background-color: #0E4B9A;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 24px;
+    cursor: pointer;
+    width: 100%;
+    border: none;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+    .btn-submit:hover {
+        background-color: #095BBD;
+        transform: scale(1.05);
+    }
+
+.links {
+    margin-top: 20px;
+}
+
+    .links a {
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+    }
