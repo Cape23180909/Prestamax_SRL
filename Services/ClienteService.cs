@@ -63,6 +63,7 @@ public class ClienteService
             .Where(criterio)
             .ToListAsync();
     }
+    //Metodo para obtener todos los clientes y poder hacer el dicho prestamo del mismo
     public async Task<List<Clientes>> ObtenerTodos()
     {
         return await _contexto.Clientes.ToListAsync();
@@ -78,14 +79,8 @@ public class ClienteService
             .Where(c => c.Prestamos.Any())
             .ToListAsync();
     }
-    public async Task<List<Prestamos>> ObtenerPrestamosPorCliente(int clienteId)
-    {
-        return await _contexto.Prestamos
-                             .Where(p => p.ClienteId == clienteId)
-                             .ToListAsync();
-    }
 
-    public async Task <bool> ExisteCedula(string cedula)
+    public async Task<bool> ExisteCedula(string cedula)
     {
         return await _contexto.Clientes.AnyAsync(c => c.Cedula == cedula);
     }
@@ -94,6 +89,4 @@ public class ClienteService
     {
         return await _contexto.Clientes.AnyAsync(c => c.Telefono == telefono);
     }
-
-
 }

@@ -4,7 +4,6 @@ using Prestamax_SRL.Models;
 using System.Linq.Expressions;
 
 namespace Prestamax_SRL.Services;
-
 public class CobroService
 {
     private readonly ApplicationDbContext _contexto;
@@ -37,18 +36,18 @@ public class CobroService
     // Método Guardar 
     public async Task<bool> Guardar(Cobros cobro)
     {
-        try
-        {
-            if (!await Existe(cobro.CobroId))
-                return await Insertar(cobro);
-            else
-                return await Modificar(cobro);
-        }
-        catch (DbUpdateException ex)
-        {
-            // Log the error or notify the error, this could be an integration with a logging service.
-            throw new InvalidOperationException("Error al guardar el cobro en la base de datos.", ex);
-        }
+        //try
+        //{
+        if (!await Existe(cobro.CobroId))
+            return await Insertar(cobro);
+        else
+            return await Modificar(cobro);
+        //}
+        //catch (DbUpdateException ex)
+        //{
+        //    // Log the error or notify the error, this could be an integration with a logging service.
+        //    throw new InvalidOperationException("Error al guardar el cobro en la base de datos.", ex);
+        //}
     }
 
 
@@ -77,18 +76,6 @@ public class CobroService
             .AsNoTracking()
             .Where(criterio)
             .ToListAsync();
-    }
-
-    // Método para obtener todos los clientes
-    public async Task<List<Clientes>> ObtenerTodosClientes()
-    {
-        return await _contexto.Clientes.AsNoTracking().ToListAsync();
-    }
-
-    // Método para obtener todos los préstamos
-    public async Task<List<Prestamos>> ObtenerTodosPrestamos()
-    {
-        return await _contexto.Prestamos.AsNoTracking().ToListAsync();
     }
 
     public async Task GuardarCobro(Cobros cobro)
@@ -124,5 +111,4 @@ public class CobroService
     {
         return _contexto.Cobros.Where(filtro).ToList();
     }
-
 }

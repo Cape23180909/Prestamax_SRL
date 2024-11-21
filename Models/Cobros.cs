@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Prestamax_SRL.Models;
-
 public class Cobros
 {
     [Key]
@@ -37,7 +36,7 @@ public class Cobros
     [CustomValidation(typeof(Cobros), nameof(ValidarFechaCobro))]
     public DateTime? FechaCobro { get; set; }
 
-    // Método de validación personalizado para FechaCobro
+    // Metodo para FechaCobro
     public static ValidationResult ValidarFechaCobro(DateTime? fechaCobro, ValidationContext context)
     {
         var cobros = (Cobros)context.ObjectInstance;
