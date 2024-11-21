@@ -4,6 +4,7 @@
 @inject NavigationManager navigationManager
 
 <PageTitle>Consulta de clientes para cobros</PageTitle>
+
 <div class="container-fluid vh-100 d-flex flex-column justify-content-center">
     <div class="card shadow-lg w-100 h-100">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -96,7 +97,7 @@
         listarclientes = clientesConSaldo;
     }
 
-    private void SeleccionarCliente(int clienteId)
+    private async Task SeleccionarCliente(int clienteId)
     {
         // Navegar a la ruta de creación de cobros pasando el clienteId como parámetro
         navigationManager.NavigateTo($"/Cobro/Create?clienteId={clienteId}");
