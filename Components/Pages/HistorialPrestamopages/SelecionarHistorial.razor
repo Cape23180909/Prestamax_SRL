@@ -7,25 +7,32 @@
 
 <div class="container-fluid vh-100 d-flex flex-column justify-content-center">
     <div class="card shadow-lg w-100 h-100">
-        <div class="card-header d-flex justify-content-between align-items-center  text-black">
-            <h3 class="card-title text-center w-100">Historial de pr&eacute;stamo</h3>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <!-- Botón Volver -->
+            <div class="d-flex align-items-center">
+                <button @onclick="Volver" class="btn btn-outline-danger mt-1">
+                    <span class="bi bi-arrow-left"></span> Volver
+                </button>
+            </div>
+            <h3 class="card-title text-center w-100">Historial de préstamos</h3>
+         
         </div>
 
         <div class="card-body overflow-auto">
-            <p class="text-center "<strong>Selecciona un cliente para ver su historial de préstamos.</strong></p>
+            <p class="text-center"><strong>Selecciona un cliente para ver su historial de préstamos.</strong></p>
             <div class="row mb-4 align-items-end">
                 <div class="col-md-4">
-                    <label for="Filtro" class="form-label"<strong>Filtrar por:</strong></label>
+                    <label for="Filtro" class="form-label"><strong>Filtrar por:</strong></label>
                     <select @bind="filtro" class="form-select">
                         <option value="0">Seleccione una opción</option>
-                        <option value="Cedula">Cedula</option>
+                        <option value="Cedula">Cédula</option>
                         <option value="Nombres">Nombres</option>
                         <option value="Apellidos">Apellidos</option>
                     </select>
                 </div>
 
                 <div class="col-md-5">
-                    <label for="ValorFiltro" class="form-label"<strong>Buscar Cliente:</strong></label>
+                    <label for="ValorFiltro" class="form-label"><strong>Buscar Cliente:</strong></label>
                     <div class="input-group">
                         <input @bind="valorFiltro" class="form-control" placeholder="Ingrese valor a buscar" />
                         <button @onclick="Buscar" class="btn btn-outline-primary" type="button">
@@ -40,10 +47,9 @@
                     <thead class="table-light">
                         <tr>
                             <th>Cliente ID</th>
-                            <th>Cedula</th>
+                            <th>Cédula</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
-                            <th>Cédula</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -57,7 +63,6 @@
                                     <td>@cliente.Cedula</td>
                                     <td>@cliente.Nombres</td>
                                     <td>@cliente.Apellidos</td>
-                                    <td>@cliente.Cedula</td>
                                     <td>
                                         <button class="btn btn-outline-success btn-sm rounded-pill" @onclick="() => NavegarAClienteHistorial(cliente.ClienteId)">
                                             <span class="bi bi-eye me-2"></span> Ver Historial
@@ -104,22 +109,25 @@
         {
             await CargarClientesConPrestamos();
         }
-        else if (filtro == "Cedula")
+        else
         {
-            clientes = await clienteService.Listar(c => c.Cedula.Contains(valorFiltro) && c.Prestamos.Any());
-        }
-        else if (filtro == "Nombres")
-        {
-            clientes = await clienteService.Listar(c => c.Nombres.Contains(valorFiltro) && c.Prestamos.Any());
-        }
-        else if (filtro == "Apellidos")
-        {
-            clientes = await clienteService.Listar(c => c.Apellidos.Contains(valorFiltro) && c.Prestamos.Any());
+            clientes = filtro switch
+            {
+                "Cedula" => await clienteService.Listar(c => c.Cedula.Contains(valorFiltro) && c.Prestamos.Any()),
+                "Nombres" => await clienteService.Listar(c => c.Nombres.Contains(valorFiltro) && c.Prestamos.Any()),
+                "Apellidos" => await clienteService.Listar(c => c.Apellidos.Contains(valorFiltro) && c.Prestamos.Any()),
+                _ => clientes
+            };
         }
     }
 
     private void NavegarAClienteHistorial(int clienteId)
     {
         navigationManager.NavigateTo($"/Cliente/Historial/{clienteId}");
+    }
+
+    private void Volver()
+    {
+        navigationManager.NavigateTo("/menu"); // Cambia la ruta según sea necesario.
     }
 }

@@ -12,8 +12,8 @@ using Prestamax_SRL.Data;
 namespace Prestamax_SRL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241114024702_Prestamo")]
-    partial class Prestamo
+    [Migration("20241122151420_NuevaMigracion")]
+    partial class NuevaMigracion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -275,6 +275,7 @@ namespace Prestamax_SRL.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("FechaCobro")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FechaInicio")

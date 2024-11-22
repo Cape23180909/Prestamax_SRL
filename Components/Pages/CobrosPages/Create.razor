@@ -185,6 +185,8 @@
                             break;
                         default:
                             throw new InvalidOperationException("Forma de pago no soportada");
+
+                     
                     }
                 }
                 else
@@ -208,6 +210,7 @@
 
             // Actualizar la lista de préstamos en el índice
             await prestamoService.ActualizarPrestamosDespuesCobro();
+            Retroceder();
         }
         catch (Exception ex)
         {

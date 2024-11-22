@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Prestamax_SRL.Migrations
 {
     /// <inheritdoc />
-    public partial class Prestamo : Migration
+    public partial class NuevaMigracion : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -70,7 +70,7 @@ namespace Prestamax_SRL.Migrations
                     Mora = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     ImportePagar = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaCobro = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FechaCobro = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ClientesClienteId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

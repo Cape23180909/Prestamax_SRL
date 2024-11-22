@@ -272,6 +272,7 @@ namespace Prestamax_SRL.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("FechaCobro")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("FechaInicio")

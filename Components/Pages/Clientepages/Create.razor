@@ -137,21 +137,21 @@
     {
         if (!await Validar())
         {
-            toastService.Notify(new(ToastType.Success,
-           iconName: IconName.None,
-           title: "Validación",
-           helpText: "",
-           message: "Ya existe un cliente con ese Id."));
+           //  toastService.Notify(new(ToastType.Success,
+           // iconName: IconName.None,
+           // title: "Validación",
+           // helpText: "",
+           // message: "Ya existe un cliente con ese Id."));
             return;
         }
         var guardado = await clienteService.Guardar(cliente);
         if (guardado)
         {
-            toastService.Notify(new(ToastType.Success,
-            iconName: IconName.None,
-            title: "Guardado",
-            helpText: "",
-            message: "El cliente se ha guardado correctamente."));
+            // toastService.Notify(new(ToastType.Success,
+            // iconName: IconName.None,
+            // title: "Guardado",
+            // helpText: "",
+            // message: "El cliente se ha guardado correctamente."));
             Nuevo();
             Retroceder();
         }
