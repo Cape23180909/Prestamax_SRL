@@ -1,8 +1,8 @@
 ﻿@using Mono.TextTemplating
 @inherits LayoutComponentBase
 @inject NavigationManager navigationManager
-@rendermode InteractiveServer
-
+@* @rendermode InteractiveServer *@
+   
 <link rel="stylesheet" href="css/styles.css">
 
 <Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" />
@@ -12,7 +12,7 @@
         <header>
             <button @onclick="Volver">
                 <img src="/Money.png" alt="Ícono de Menú" />
-                <span>Prestamax_SRL</span>
+                <span>Prestamax SRL</span>
             </button>
             <button @onclick="SalirMenu">
                 Usuario: @userName
@@ -20,6 +20,7 @@
         </header>
 
         <article>
+            <!-- Usa @Body directamente en lugar de un parámetro -->
             @Body
         </article>
 
@@ -31,37 +32,37 @@
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
+    <a href="/menu" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
 
 @code {
     [CascadingParameter]
-    private Task<AuthenticationState> AuthenticationState { get; set; }
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
 
-    private string userName;
+    private string userName = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
         var authState = await AuthenticationState;
         var user = authState.User;
 
-        if (user.Identity.IsAuthenticated)
+        if (user.Identity is not null && user.Identity.IsAuthenticated)
         {
-            userName = user.Identity.Name;
+            userName = user.Identity.Name ?? "Usuario";
         }
         else
         {
-            userName = "";
+            userName = "Invitado";
         }
     }
 
-    public void Volver()
+    private void Volver()
     {
         navigationManager.NavigateTo("/menu");
     }
 
-    public void SalirMenu()
+    private void SalirMenu()
     {
         navigationManager.NavigateTo("/logout");
     }
