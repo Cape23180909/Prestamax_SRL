@@ -1,4 +1,5 @@
 using BlazorBootstrap;
+using Blazored.Toast;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -41,10 +42,12 @@ builder.Services.AddScoped<ClienteService>();
 builder.Services.AddScoped<PrestamoService>();
 builder.Services.AddScoped<CobroService>();
 builder.Services.AddBlazorBootstrap();
+builder.Services.AddSingleton<ToastService>();
 builder.Services.AddSignalR();
 
 
 var app = builder.Build();
+
 
 // Configuración del pipeline de solicitudes HTTP.
 if (app.Environment.IsDevelopment())
