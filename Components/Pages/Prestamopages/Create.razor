@@ -145,10 +145,13 @@
     </div>
 </EditForm>
 
+<Toasts class="p-3" Messages="Mensaje" AutoHide="true" StackLength="3" Placement="ToastsPlacement.TopRight" />
+
 @code {
     private Clientes cliente;
     public Prestamos prestamo = new Prestamos();
     private EditContext editContext;
+    List<ToastMessage> Mensaje = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -211,6 +214,7 @@
         title: "Guardado Exitoso",
         helpText: "",
         message: "El préstamo se ha guardado correctamente."));
+        await Task.Delay(3000);
         await Retroceder();
     }
 
@@ -263,5 +267,27 @@
 
             prestamo.MontoCuota = 0; // O usa null si el tipo lo permite
         }
+    }
+
+    private void ShowToast(ToastType type)
+    {
+        string title = type switch
+        {
+            ToastType.Success => "¡Éxito!",
+            ToastType.Warning => "Advertencia",
+            ToastType.Danger => "Error",
+            _ => "Información"
+        };
+
+        string message = type switch
+        {
+            ToastType.Success => "El Prestamo se guardó correctamente.",
+            ToastType.Warning => "Complete todos los campos antes de guardar.",
+            ToastType.Danger => "Hubo un error al guardar el Prestamo.",
+            _ => "Información general."
+        };
+
+        Mensaje.Add(new ToastMessage { Type = type, Title = title, Message = message });
+        StateHasChanged();
     }
 }

@@ -145,11 +145,14 @@
     </div>
 </EditForm>
 
+<Toasts class="p-3" Messages="Mensaje" AutoHide="true" StackLength="3" Placement="ToastsPlacement.TopRight" />
+
 @code {
     [Parameter]
     public int prestamoId { get; set; }
     private Clientes cliente;
     public Prestamos prestamo = new Prestamos();
+    List<ToastMessage> Mensaje = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -189,6 +192,7 @@
             message: "El préstamo se ha modificado correctamente."));
             CalcularMontos(); // Calculamos los montos antes de guardar
             await prestamoService.Guardar(prestamo); // Método para actualizar el préstamo
+            await Task.Delay(3000);
             Retroceder();
         }
     }

@@ -65,11 +65,14 @@
     </div>
 }
 
+<Toasts class="p-3" Messages="Mensaje" AutoHide="true" StackLength="3" Placement="ToastsPlacement.TopRight" />
+
 @code {
     [Parameter]
     public int prestamoId { get; set; }
     public Prestamos? prestamo { get; set; }
-    private Clientes? cliente; // Cambia a Clientes? para permitir nulos
+    private Clientes? cliente; 
+    List<ToastMessage> Mensaje = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,6 +98,7 @@
             title: "Eliminación Exitosa",
             helpText: "",
             message: "El préstamo se ha eliminado correctamente."));
+            await Task.Delay(3000);
             Retroceder();
         }
     }
