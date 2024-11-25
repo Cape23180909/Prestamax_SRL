@@ -7,9 +7,7 @@ namespace Prestamax_SRL.Data;
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-    {
-    }
-
+    { }
     public DbSet<Clientes> Clientes { get; set; }
     public DbSet<Prestamos> Prestamos { get; set; }
     public DbSet<Cobros> Cobros { get; set; }
