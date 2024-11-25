@@ -36,20 +36,11 @@ public class CobroService
     // Método Guardar 
     public async Task<bool> Guardar(Cobros cobro)
     {
-        //try
-        //{
         if (!await Existe(cobro.CobroId))
             return await Insertar(cobro);
         else
             return await Modificar(cobro);
-        //}
-        //catch (DbUpdateException ex)
-        //{
-        //    // Log the error or notify the error, this could be an integration with a logging service.
-        //    throw new InvalidOperationException("Error al guardar el cobro en la base de datos.", ex);
-        //}
     }
-
 
     // Método Eliminar
     public async Task<bool> Eliminar(int id)
@@ -77,13 +68,11 @@ public class CobroService
             .Where(criterio)
             .ToListAsync();
     }
-
     public async Task GuardarCobro(Cobros cobro)
     {
         _contexto.Cobros.Add(cobro);
         await _contexto.SaveChangesAsync();
     }
-
     public async Task ActualizarPrestamo(Prestamos prestamo)
     {
         var prestamoExistente = await _contexto.Prestamos.FindAsync(prestamo.PrestamosId);
