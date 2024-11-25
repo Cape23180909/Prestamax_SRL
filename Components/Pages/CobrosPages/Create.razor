@@ -1,5 +1,4 @@
 ﻿@page "/Cobro/Create"
-@using System.Diagnostics
 @inject ClienteService clienteService
 @inject PrestamoService prestamoService
 @inject CobroService cobroService
@@ -11,92 +10,73 @@
 
 <EditForm Model="cobro" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
-
     <div class="container-fluid vh-95 d-flex justify-content-center align-items-center">
         <div class="card shadow-lg" style="width: 1400px; min-height: 600px; border-radius: 15px;">
 
-            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; background-color: #f1f1f1;">
-                <div style="flex: 1; text-align: center;">
-                    <h3 class="card-title">Registrar Cobro</h3>
-                </div>
-                <button type="button" class="btn btn-primary" style="border-radius: 5px;" @onclick="RedirigirABusquedaCliente">
+            <div class="card-header d-flex justify-content-between align-items-center bg-light">
+                <h3 class="card-title text-center flex-grow-1">Registrar Cobro</h3>
+                <button class="btn btn-primary" @onclick="RedirigirABusquedaCliente">
                     <span class="bi bi-person-fill-check"></span> Buscar Deudor
                 </button>
             </div>
 
-            <div class="card-body" style="background-color: #f9f9f9;">
-                @* Información del Cliente Seleccionado *@
-                <div class="mb-4">
+            @*  Contenido  *@
+            <div class="card-body bg-light">
+                @*  Información del Cliente *@
+                <section>
                     <h5 class="text-primary">Información del Cliente Seleccionado</h5>
                     @if (cliente != null)
                     {
-                        <div class="card mb-3" style="border-radius: 10px; background-color: #e7f0ff;">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label><strong>Nombre:</strong></label>
-                                        <span>@cliente.Nombres @cliente.Apellidos</span>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label><strong>Cédula:</strong></label>
-                                        <span>@cliente.Cedula</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="card mb-3 bg-info-subtle p-3">
+                            <strong>Nombre:</strong> @cliente.Nombres @cliente.Apellidos<br />
+                            <strong>Cédula:</strong> @cliente.Cedula
                         </div>
                     }
                     else
                     {
-                        <div class="alert alert-info">
-                            <strong>Nota:</strong> Selecciona un cliente para asociarlo al cobro.
-                        </div>
+                        <div class="alert alert-info">Seleccione un cliente para continuar.</div>
                     }
-                </div>
+                </section>
 
-                @* Selección de Préstamo y Detalles del Cobro *@
-                <h5 class="text-primary">Detalles del Cobro</h5>
-
-                <div class="mb-3">
-                    <div class="row">
-                        <label for="prestamoId" class="form-label"<strong>Pr&eacute;stamo:</strong></label>
-                        <InputSelect id="prestamoId" class="form-control" @bind-Value="cobro.PrestamoId">
-                            <option value="">Selecciona un préstamo</option>
+                @*    Detalles del Cobro  *@
+                <section>
+                    <h5 class="text-primary">Detalles del Cobro</h5>
+                    <div class="mb-3">
+                        <label>Préstamo:</label>
+                        <InputSelect class="form-control" @bind-Value="cobro.PrestamoId" @onchange="OnPrestamoSeleccionado">
+                            <option value="">Seleccione</option>
                             @foreach (var prestamo in prestamos)
                             {
-                                <option value="@prestamo.PrestamosId">Préstamo ID: @prestamo.PrestamosId - Monto: @prestamo.Saldo</option>
+                                <option value="@prestamo.PrestamosId">ID: @prestamo.PrestamosId - Saldo: @prestamo.Saldo</option>
                             }
                         </InputSelect>
                         <ValidationMessage For="@(() => cobro.PrestamoId)" />
                     </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="FechaCobro" class="form-label"<strong>Fecha Cobro:</strong></label>
-                    <InputDate id="importePagar" class="form-control" @bind-Value="cobro.FechaCobro" />
-                    <ValidationMessage For="@(() => cobro.ImportePagar)" />
-                </div>
-
-                <div class="mb-3">
-                    <label for="importePagar" class="form-label"<strong>Importe a Pagar:</strong></label>
-                    <InputNumber id="importePagar" class="form-control" @bind-Value="cobro.ImportePagar" />
-                    <ValidationMessage For="@(() => cobro.ImportePagar)" />
-                </div>
-
-                <div class="mb-3">
-                    <label for="mora" class="form-label"<strong>Mora(opcional):</strong></label>
-                    <InputNumber id="mora" class="form-control" @bind-Value="cobro.Mora" />
-                </div>
+                    <div class="mb-3">
+                        <label>Fecha de Cobro:</label>
+                        <InputDate class="form-control" @bind-Value="cobro.FechaCobro" @onchange="CalcularMora" />
+                        <ValidationMessage For="@(() => cobro.FechaCobro)" />
+                    </div>
+                    <div class="mb-3">
+                        <label>Importe a Pagar:</label>
+                        <InputNumber class="form-control" @bind-Value="cobro.ImportePagar" step="0.01" />
+                        <ValidationMessage For="@(() => cobro.ImportePagar)" />
+                    </div>
+                    <div class="mb-3">
+                        <label>Mora (opcional):</label>
+                        <InputNumber class="form-control" @bind-Value="cobro.Mora" readonly />
+                    </div>
+                </section>
             </div>
 
-            <!-- Botones de acciones -->
-            <div class="card-footer text-center" style="background-color: #f1f1f1;">
-                <button type="button" class="btn btn-outline-primary" @onclick="Nuevo">
+            <div class="card-footer text-center bg-light">
+                <button class="btn btn-outline-primary" @onclick="Nuevo">
                     <span class="bi bi-plus-circle"></span> Nuevo
                 </button>
-                <button type="submit" class="btn btn-outline-success">
+                <button type="submit" class="btn btn-outline-success" @onclick="() => ShowToast(ToastType.Success)">
                     <span class="bi bi-check-circle-fill"></span> Guardar
                 </button>
-                <button type="button" class="btn btn-outline-danger" @onclick="Retroceder">
+                <button class="btn btn-outline-danger" @onclick="Retroceder">
                     <span class="bi bi-arrow-bar-left"></span> Retroceder
                 </button>
             </div>
@@ -104,126 +84,113 @@
     </div>
 </EditForm>
 
+<Toasts class="p-3" Messages="Mensaje" AutoHide="true" StackLength="3" Placement="ToastsPlacement.TopRight" />
+
 @code {
     private Clientes cliente;
-    public Cobros cobro = new Cobros();
-    private List<Prestamos> prestamos = new List<Prestamos>();
+    public Cobros cobro = new();
+    private List<Prestamos> prestamos = new();
+    List<ToastMessage> Mensaje = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
-        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
-        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(new Uri(navigationManager.Uri).Query);
         if (query.TryGetValue("clienteId", out var clienteId))
         {
             cliente = await clienteService.Buscar(int.Parse(clienteId));
             cobro.ClienteId = cliente.ClienteId;
-
-            // Cargar los préstamos asociados al cliente seleccionado
             prestamos = await prestamoService.ObtenerPrestamosPorCliente(cliente.ClienteId);
         }
     }
 
-    private async Task RedirigirABusquedaCliente()
-    {
-        navigationManager.NavigateTo("/Cobros/SeleccionarCliente");
-    }
+    private void RedirigirABusquedaCliente() => navigationManager.NavigateTo("/Cobros/SeleccionarCliente");
 
-    public async Task Nuevo()
+    private async Task Nuevo()
     {
-        cobro = new Cobros();
+        cobro = new();
         cliente = null;
     }
 
-    private async Task Retroceder()
+    private void Retroceder() => navigationManager.NavigateTo("/menu");
+
+    private void OnPrestamoSeleccionado(ChangeEventArgs e)
     {
-        navigationManager.NavigateTo("/menu");
+        cobro.PrestamoId = int.Parse(e.Value.ToString());
+        CalcularMora();
     }
+
+    private void CalcularMora()
+    {
+        if (cobro.PrestamoId == 0)
+        {
+            cobro.Mora = 0;
+            return;
+        }
+
+        var prestamo = prestamos.FirstOrDefault(p => p.PrestamosId == cobro.PrestamoId);
+        if (prestamo != null)
+        {
+            var fechaCobro = cobro.FechaCobro ?? DateTime.Now;
+            var fechaVencimiento = prestamo.FechaInicio ?? DateTime.Now;
+
+            var diasRetraso = (fechaCobro - fechaVencimiento).Days;
+
+            cobro.Mora = diasRetraso > 0 ? Math.Max(diasRetraso * 10, 0) : 0;
+        }
+
+        StateHasChanged();
+    }
+
     private async Task Guardar()
     {
         if (cliente == null || cobro.PrestamoId == 0)
         {
-            toastService.Notify(new(ToastType.Warning,
-                iconName: IconName.None,
-                title: "Error",
-                message: "Por favor, selecciona un deudor y un préstamo antes de guardar el cobro."));
+            toastService.Notify(new(ToastType.Warning, title: "Atención", message: "Selecciona un deudor y un préstamo."));
             return;
         }
 
         try
         {
-            // Obtener el préstamo seleccionado para actualizar su saldo y fecha de pago
             var prestamo = await prestamoService.ObtenerPrestamoPorId(cobro.PrestamoId);
             if (prestamo != null)
             {
-                // Restar el importe pagado al saldo del préstamo
-                prestamo.Saldo -= cobro.ImportePagar;
-                if (prestamo.Saldo < 0) prestamo.Saldo = 0;
+                var fechaInicio = prestamo.FechaInicio ?? DateTime.Now;
+                var fechaCobro = cobro.FechaCobro ?? DateTime.Now;
+                var diasRetraso = (fechaCobro - fechaInicio).Days;
 
-                // Si el préstamo tiene cuotas definidas, actualizamos el saldo de la cuota restante
-                if (prestamo.Cuotas.HasValue)
-                {
-                    // Aseguramos que cuotaRestante sea un número entero de cuotas restantes
-                    int cuotaRestante = prestamo.Cuotas.Value - 1; // Restamos una cuota por cada pago realizado
+                cobro.Mora = diasRetraso > 0 ? Math.Max(diasRetraso * 10, 0) : 0;
+                cobro.ImportePagar += cobro.Mora ?? 0;
 
-                    // Comprobamos que cuotaRestante no sea negativo
-                    cuotaRestante = cuotaRestante < 0 ? 0 : cuotaRestante;
-
-                    // Asignamos el valor actualizado de cuotas restantes
-                    prestamo.Cuotas = cuotaRestante;
-                }
-
-                // Verificar y actualizar la fecha de próximo pago en función de la forma de pago
-                if (prestamo.FechaInicio.HasValue)
-                {
-                    switch (prestamo.FormaPago)
-                    {
-                        case "Quincenal":
-                            prestamo.FechaInicio = prestamo.FechaInicio.Value.AddDays(15); // Cada 15 días
-                            break;
-                        case "Semanal":
-                            prestamo.FechaInicio = prestamo.FechaInicio.Value.AddDays(7); // Cada 7 días
-                            break;
-                        default:
-                            throw new InvalidOperationException("Forma de pago no soportada");
-
-                     
-                    }
-                }
-                else
-                {
-                    // Si no hay fecha inicial, se establece la actual
-                    prestamo.FechaInicio = DateTime.Now;
-                }
-
-                // Guardar los cambios en el préstamo actualizado
+                prestamo.Saldo = Math.Max((prestamo.Saldo ?? 0) - cobro.ImportePagar, 0);
                 await prestamoService.ActualizarPrestamo(prestamo);
             }
 
-            // Guardar el cobro realizado
             await cobroService.GuardarCobro(cobro);
-
-            // Notificación de éxito
-            toastService.Notify(new(ToastType.Success,
-                iconName: IconName.None,
-                title: "Guardado Exitoso",
-                message: "El cobro se ha guardado correctamente y el saldo y la fecha de pago del préstamo han sido actualizados."));
-
-            // Actualizar la lista de préstamos en el índice
-            await prestamoService.ActualizarPrestamosDespuesCobro();
+            toastService.Notify(new(ToastType.Success, title: "Éxito", message: "Cobro registrado correctamente."));
+            await Task.Delay(3000);
             Retroceder();
         }
         catch (Exception ex)
         {
-            toastService.Notify(new(ToastType.Success,
-                iconName: IconName.None,
-                title: "Error",
-                message: $"Hubo un error al guardar el cobro: {ex.Message}"));
+            toastService.Notify(new(ToastType.Danger, title: "Error", message: $"Error: {ex.Message}"));
         }
     }
 
-    public async Task ActualizarListaPrestamos()
+    private void ShowToast(ToastType type)
     {
-        prestamos = await prestamoService.ListarPrestamosConClientes();
-        StateHasChanged();
+        string title = type switch
+        {
+            ToastType.Success => "¡Éxito!",
+            ToastType.Warning => "Advertencia",
+            ToastType.Danger => "Error",
+            _ => "Información"
+        };
+
+        string message = type switch
+        {
+            ToastType.Warning => "Complete todos los campos antes de guardar.",
+            ToastType.Danger => "Hubo un error al guardar el cobro.",
+            _ => "Complete todos los campos antes de guardar."
+        };
     }
 }
