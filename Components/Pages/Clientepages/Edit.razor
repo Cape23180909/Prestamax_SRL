@@ -73,11 +73,13 @@
         </div>
     </div>
 </EditForm>
+<Toasts class="p-3" Messages="Mensaje" AutoHide="true" StackLength="3" Placement="ToastsPlacement.TopRight" />
 
 @code {
     [Parameter]
     public int ClienteId { get; set; }
     public Clientes cliente { get; set; } = new Clientes();
+    List<ToastMessage> Mensaje = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -111,8 +113,8 @@
             iconName: IconName.None,
             title: "Guardado",
             helpText: "",
-            message: "Los detalles del cliente se han guardado correctamente."));
-            Nuevo();
+            message: " El cliente se ha modificado correctamente."));
+            await Task.Delay(3000);
             Retroceder();
         }
     }
