@@ -45,9 +45,7 @@ builder.Services.AddBlazorBootstrap();
 builder.Services.AddSingleton<ToastService>();
 builder.Services.AddSignalR();
 
-
 var app = builder.Build();
-
 
 // Configuración del pipeline de solicitudes HTTP.
 if (app.Environment.IsDevelopment())
