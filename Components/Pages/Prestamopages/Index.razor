@@ -127,6 +127,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        listaPrestamos = await prestamoService.ObtenerTodos();
         await ActualizarListaPrestamos();
     }
 
