@@ -169,4 +169,13 @@ public class PrestamoService
 
         return prestamos;
     }
+
+    public async Task<List<Prestamos>> ObtenerTodos()
+    {
+        await using var contexto = await _dbFactory.CreateDbContextAsync(); // Usa el DbFactory
+        return await contexto.Prestamos
+            .AsNoTracking() // No rastrear cambios
+            .ToListAsync(); // Convierte el resultado a una lista
+    }
+
 }
