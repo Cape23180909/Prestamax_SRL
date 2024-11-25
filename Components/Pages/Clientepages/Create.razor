@@ -74,11 +74,14 @@
     </div>
 </EditForm>
 
+<Toasts class="p-3" Messages="Mensaje" AutoHide="true" StackLength="3" Placement="ToastsPlacement.TopRight" />
+
 @code {
     [Parameter]
     public int ClienteId { get; set; }
     public Clientes cliente = new Clientes();
     public List<Clientes> listacliente = new List<Clientes>();
+    List<ToastMessage> Mensaje = new List<ToastMessage>();
     private bool existe = false;
 
     public async Task Nuevo()
@@ -135,30 +138,74 @@
 
     public async Task Guardar()
     {
-        if (await Validar())
+        // Verifica si la validación es correcta
+        if (!await Validar())
         {
-           //  toastService.Notify(new(ToastType.Success,
-           // iconName: IconName.None,
-           // title: "Validación",
-           // helpText: "",
-           // message: "Ya existe un cliente con ese Id."));
-            return;
+            Console.WriteLine("Validación fallida");
+
+            // Si la validación falla, muestra una notificación de error
+            toastService.Notify(new ToastMessage(
+                ToastType.Danger, // Cambié a "Danger" ya que es más adecuado para validación fallida
+                iconName: IconName.None,
+                title: "Error de Validación", // Cambié el título para reflejar mejor el tipo de notificación
+                helpText: "",
+                message: "Ya existe un cliente con ese Id.")); // Mensaje de error
+            return; // Sale de la función si la validación falla
         }
+
+        // Llama al servicio para guardar el cliente
         var guardado = await clienteService.Guardar(cliente);
+
+        // Verifica si el cliente se guardó correctamente
         if (guardado)
         {
-            // toastService.Notify(new(ToastType.Success,
-            // iconName: IconName.None,
-            // title: "Guardado",
-            // helpText: "",
-            // message: "El cliente se ha guardado correctamente."));
-            Nuevo();
-            Retroceder();
+            // Si se guarda exitosamente, muestra una notificación de éxito
+            toastService.Notify(new ToastMessage(
+                ToastType.Success,
+                iconName: IconName.None,
+                title: "Guardado",
+                helpText: "",
+                message: "El cliente se ha guardado correctamente.")); // Mensaje de éxito
+            await Task.Delay(3000); // Espera 3 segundos antes de continuar
+            await Retroceder(); // Realiza la acción posterior, por ejemplo, navegar a otra pantalla
+        }
+        else
+        {
+            // Si no se guarda, muestra una notificación de error
+            toastService.Notify(new ToastMessage(
+                ToastType.Danger,
+                iconName: IconName.None,
+                title: "Error",
+                helpText: "",
+                message: "Ocurrió un error al guardar el cliente.")); // Mensaje de error
         }
     }
+
 
     public async Task Retroceder()
     {
         navigationManager.NavigateTo("/Cliente/Index");
+    }
+
+    private void ShowToast(ToastType type)
+    {
+        string title = type switch
+        {
+            ToastType.Success => "¡Éxito!",
+            ToastType.Warning => "Advertencia",
+            ToastType.Danger => "Error",
+            _ => "Información"
+        };
+
+        string message = type switch
+        {
+            ToastType.Success => "El Cliente se guardó correctamente.",
+            ToastType.Warning => "Complete todos los campos antes de guardar.",
+            ToastType.Danger => "Hubo un error al guardar el Cliente.",
+            _ => "Información general."
+        };
+
+        Mensaje.Add(new ToastMessage { Type = type, Title = title, Message = message });
+        StateHasChanged();
     }
 }
