@@ -73,7 +73,7 @@
                 <button class="btn btn-outline-primary" @onclick="Nuevo">
                     <span class="bi bi-plus-circle"></span> Nuevo
                 </button>
-                <button type="submit" class="btn btn-outline-success" @onclick="() => ShowToast(ToastType.Success)">
+                <button type="submit" class="btn btn-outline-success">
                     <span class="bi bi-check-circle-fill"></span> Guardar
                 </button>
                 <button class="btn btn-outline-danger" @onclick="Retroceder">
@@ -158,14 +158,34 @@
                 var fechaCobro = cobro.FechaCobro ?? DateTime.Now;
                 var diasRetraso = (fechaCobro - fechaInicio).Days;
 
+                // Calcula la mora si hay días de retraso
                 cobro.Mora = diasRetraso > 0 ? Math.Max(diasRetraso * 10, 0) : 0;
+
+                // Suma la mora al importe total a pagar
                 cobro.ImportePagar += cobro.Mora ?? 0;
 
+                // Actualiza el saldo del préstamo
                 prestamo.Saldo = Math.Max((prestamo.Saldo ?? 0) - cobro.ImportePagar, 0);
+
+                // Lógica para calcular la siguiente fecha de pago
+                if (prestamo.FormaPago == "Quincenal")
+                {
+                    // Agrega 15 días para pagos quincenales
+                    prestamo.FechaInicio = fechaCobro.AddDays(15);
+                }
+                else if (prestamo.FormaPago == "Semanal")
+                {
+                    // Agrega 7 días para pagos semanales
+                    prestamo.FechaInicio = fechaCobro.AddDays(7);
+                }
+
+                // Actualiza el préstamo en la base de datos
                 await prestamoService.ActualizarPrestamo(prestamo);
             }
 
+            // Guarda el cobro en la base de datos
             await cobroService.GuardarCobro(cobro);
+
             toastService.Notify(new(ToastType.Success, title: "Éxito", message: "Cobro registrado correctamente."));
             await Task.Delay(3000);
             Retroceder();
@@ -174,23 +194,5 @@
         {
             toastService.Notify(new(ToastType.Danger, title: "Error", message: $"Error: {ex.Message}"));
         }
-    }
-
-    private void ShowToast(ToastType type)
-    {
-        string title = type switch
-        {
-            ToastType.Success => "¡Éxito!",
-            ToastType.Warning => "Advertencia",
-            ToastType.Danger => "Error",
-            _ => "Información"
-        };
-
-        string message = type switch
-        {
-            ToastType.Warning => "Complete todos los campos antes de guardar.",
-            ToastType.Danger => "Hubo un error al guardar el cobro.",
-            _ => "Complete todos los campos antes de guardar."
-        };
     }
 }
