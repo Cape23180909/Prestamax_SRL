@@ -54,10 +54,13 @@
     </div>
 }
 
+<Toasts class="p-3" Messages="Mensaje" AutoHide="true" StackLength="3" Placement="ToastsPlacement.TopRight" />
+
 @code {
     [Parameter]
     public int ClienteId { get; set; }
     public Clientes? clientes { get; set; }
+    List<ToastMessage> Mensaje = new List<ToastMessage>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,6 +80,7 @@
             title: "Eliminación Exitosa",
             helpText: "",
             message: "El cliente se ha eliminado correctamente."));
+            await Task.Delay(3000);
             Retroceder();
         }
     }
